@@ -57,14 +57,8 @@ export default function LandingPage() {
       {/* ── Header: Crisp Ledger Top Bar ─────────────────────────────── */}
       <header className="h-14 px-4 sm:px-8 flex items-center justify-between border-b border-[var(--rule-line)] bg-[var(--card)] sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <span className="font-mono font-bold text-xl tracking-tight text-[var(--ink-navy)] flex items-center gap-2">
+          <span className="font-mono font-bold text-xl tracking-tight text-[var(--ink-navy)]">
             Sahaj
-            <span className="roll-chip text-[10px]">
-              LEDGER v0.1
-            </span>
-          </span>
-          <span className="text-[var(--muted-foreground)] text-xs font-mono hidden sm:inline border-l border-[var(--rule-line)] pl-3">
-            RECORD BOOK
           </span>
         </div>
 
