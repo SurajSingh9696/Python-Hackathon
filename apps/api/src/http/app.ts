@@ -36,6 +36,7 @@ export async function buildApp(config: Config) {
       },
     },
     trustProxy: true,
+    rewriteUrl: (req) => (req.url ? req.url.replace(/\/{2,}/g, '/') : (req.url ?? '')),
     bodyLimit: 10 * 1024 * 1024, // 10 MB
     requestIdHeader: 'x-request-id',
     genReqId: () => crypto.randomUUID(),
@@ -61,19 +62,14 @@ export async function buildApp(config: Config) {
   });
 
   // CORS
-  const allowedOrigins = config.CORS_ORIGINS.split(',').map((o) => o.trim());
   await app.register(cors, {
     origin: (origin, cb) => {
+      // Reflect origin for preflight & cross-origin requests (Vercel, Render, local dev, custom domains)
       if (!origin) {
         cb(null, true);
         return;
       }
-      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-      if (isLocal || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-        cb(null, true);
-      } else {
-        cb(null, false);
-      }
+      cb(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

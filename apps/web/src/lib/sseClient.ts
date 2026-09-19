@@ -6,8 +6,12 @@
  */
 import { SseEventSchema, type SseEvent } from '@sahaj/shared';
 
-const rawApiUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api';
-const API_BASE = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
+function getApiBase(): string {
+  const raw = (process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api').trim().replace(/\/+$/, '');
+  return raw.endsWith('/api') ? raw : `${raw}/api`;
+}
+
+const API_BASE = getApiBase();
 
 export interface SseStreamCallbacks {
   onEvent: (event: SseEvent) => void;
