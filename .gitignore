@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Environment files — NEVER commit real secrets
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Keep .env.example (it has no real values)
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Testing / Coverage
+coverage/
+playwright-report/
+test-results/
+
+# Logs
+*.log
+logs/
+pino-*.ndjson
+
+# Turbo
+.turbo/
+
+# MongoDB local data
+mongo-data/
+redis-data/
+
+# Generated eval reports (committed only after review)
+# eval/report.md
+
+# Uploaded files (fixtures committed, user uploads not)
+uploads/
+!fixtures/
+
+# Secret scanner output
+.secret-scan-results/

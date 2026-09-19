@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#0B2A5B"/>
+  <!-- Thread knot mark -->
+  <path d="M8 22 C8 16, 14 10, 16 16 S 22 24, 24 18 S 20 10, 16 12"
+        stroke="#FF9F1C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M8 22 C9 21, 10 20.5, 11 20"
+        stroke="#00B9F1" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="11" cy="20" r="2" fill="#00B9F1"/>
+</svg>

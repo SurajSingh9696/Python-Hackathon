@@ -1,0 +1,88 @@
+{
+  "name": "Sahaj - Human Specialist Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sahaj-escalation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\nconst signatureHeader = $input.item.headers['x-sahaj-signature'] || '';\nconst secret = $env.N8N_WEBHOOK_SECRET || 'sahaj-default-secret';\nconst bodyStr = JSON.stringify($input.item.body);\nconst expectedSig = 'sha256=' + crypto.createHmac('sha256', secret).update(bodyStr).digest('hex');\n\nconst isValid = signatureHeader === expectedSig || process.env.NODE_ENV !== 'production';\n\nreturn [{\n  json: {\n    ...$input.item.body,\n    signatureValid: isValid,\n    deliveryId: $input.item.headers['x-sahaj-delivery'] || 'direct',\n    receivedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "verify-hmac",
+      "name": "Verify HMAC Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.item.json;\nconst ticketId = `TKT-${Math.floor(100000 + Math.random() * 900000)}`;\n\nconst ticket = {\n  ticketId: ticketId,\n  escalationId: data.escalationId,\n  journeyId: data.journeyId,\n  userId: data.userId,\n  reason: data.reason,\n  comment: data.comment || 'None provided',\n  journeyState: data.state || 'active',\n  domain: data.domain || 'general',\n  urgency: data.urgency || 'high',\n  queue: 'specialist_lending_desk',\n  assignedAgent: 'Specialist Officer (Noida HQ Desk)',\n  createdAt: new Date().toISOString()\n};\n\nconst userSms = `Namaste! A Paytm loan specialist has been assigned to your query (${ticketId}). We will call your registered number within 15 minutes.`;\n\nreturn [{\n  json: {\n    ...ticket,\n    userNotification: userSms,\n    notifiedUser: true,\n    status: 'assigned'\n  }\n}];"
+      },
+      "id": "create-ticket",
+      "name": "Create Support Ticket & User Notification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"ticketId\": \"{{ $json.ticketId }}\",\n  \"escalationId\": \"{{ $json.escalationId }}\",\n  \"assignedAgent\": \"{{ $json.assignedAgent }}\",\n  \"urgency\": \"{{ $json.urgency }}\",\n  \"queue\": \"{{ $json.queue }}\",\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "webhook-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [780, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Verify HMAC Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify HMAC Signature": {
+      "main": [
+        [
+          {
+            "node": "Create Support Ticket & User Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Support Ticket & User Notification": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

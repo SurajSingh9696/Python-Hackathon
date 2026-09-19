@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Custom Properties (Sahaj Warm Fintech Palette) ─────────── */
+:root {
+  /* Exact Sahaj Palette */
+  --sahaj-teal:       #0F766E;
+  --sahaj-teal-light: #14B8A6;
+  --sahaj-cyan:       #22D3EE;
+  --sahaj-orange:     #F59E0B;
+  --sahaj-amber:      #FBBF24;
+
+  --background:       #F8FAF9;
+  --surface:          #FFFFFF;
+  --text-primary:     #17201F;
+  --text-secondary:   #64748B;
+  --border:           #DDE8E6;
+
+  --success:          #10B981;
+  --error:            #EF4444;
+
+  /* Aliases & Semantic Tokens - Light Theme */
+  --color-ink-indigo:     var(--sahaj-teal);
+  --color-deep-night:     #0C1A18;
+  --color-signal-cyan:    var(--sahaj-cyan);
+  --color-saffron-thread: var(--sahaj-orange);
+  --color-mist:           var(--background);
+  --color-slate:          var(--text-secondary);
+  --color-leaf:           var(--success);
+  --color-rose:           var(--error);
+
+  --bg-page:          var(--background);
+  --bg-surface:       var(--surface);
+  --bg-surface-alt:   #F0FDF4;
+  --border-default:   var(--border);
+  --border-strong:    #BFD5D2;
+  --shadow-card:      0 2px 12px rgba(15, 118, 110, 0.06), 0 1px 3px rgba(15, 118, 110, 0.04);
+  --shadow-card-hover: 0 6px 24px rgba(15, 118, 110, 0.12), 0 2px 6px rgba(15, 118, 110, 0.08);
+
+  /* 3D Thread Dynamic Transition: Tangled Orange -> Cyan Clarity */
+  --thread-unresolved: #F59E0B;
+  --thread-resolved:   #22D3EE;
+
+  /* Signature Sahaj Gradient */
+  --gradient-sahaj: linear-gradient(135deg, #F59E0B 0%, #22D3EE 100%);
+  --gradient-teal:  linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+
+  /* Spacing */
+  --header-height:       56px;
+  --journey-panel-width: 380px;
+  --composer-height:     72px;
+}
+
+/* ── Dark Theme ──────────────────────────────────────────────────── */
+[data-theme="dark"],
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-page:        #0C1A18;
+    --bg-surface:     #132825;
+    --bg-surface-alt: #18332F;
+    --text-primary:   #F0FDF4;
+    --text-secondary: #94A3B8;
+    --border-default: rgba(221, 232, 230, 0.12);
+    --border-strong:  rgba(221, 232, 230, 0.22);
+    --shadow-card:    0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ── Base Reset & Typography ─────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-instrument-sans), var(--font-noto-devanagari), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Money / Numerals ────────────────────────────────────────────── */
+.tabular-nums,
+[class*="amount"],
+[class*="money"],
+[class*="inr"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Prose width constraint ──────────────────────────────────────── */
+.prose-sahaj {
+  max-width: 68ch;
+  line-height: 1.7;
+}
+
+/* Line height for Devanagari */
+:lang(hi),
+.lang-hi,
+.lang-hinglish {
+  line-height: 1.85;
+}
+
+/* ── Thread SVG (2D poster / progress) ──────────────────────────── */
+.thread-svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.thread-svg path.resolved {
+  stroke: var(--color-signal-cyan);
+}
+
+.thread-svg path.unresolved {
+  stroke: var(--color-saffron-thread);
+}
+
+/* ── Skeleton / Loading shimmer ──────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border-default) 0%,
+    var(--bg-surface-alt) 50%,
+    var(--border-default) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 0.375rem;
+}
+
+/* ── Scrollbar styling ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate);
+}
+
+/* ── Focus styles (keyboard accessible) ─────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-signal-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .thread-svg {
+    /* Show static state instead of animation */
+    animation: none;
+  }
+}
+
+/* ── Mobile viewport helpers ─────────────────────────────────────── */
+.h-screen-safe {
+  height: 100dvh;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Verified trust badge ────────────────────────────────────────── */
+.demo-badge,
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  background: rgba(18, 161, 80, 0.08);
+  border: 1px solid rgba(18, 161, 80, 0.25);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-leaf);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ── Chip component ──────────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--color-signal-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 185, 241, 0.1);
+}
+
+.chip-active {
+  border-color: var(--color-signal-cyan);
+  background: rgba(0, 185, 241, 0.08);
+  color: var(--color-signal-cyan);
+}
+
+/* ── Source citation chip ────────────────────────────────────────── */
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+}

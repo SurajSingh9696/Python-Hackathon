@@ -1,0 +1,38 @@
+services:
+  # Fastify Backend API
+  - type: web
+    name: sahaj-api
+    runtime: node
+    region: singapore # or oregon / frankfurt
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @sahaj/shared build && pnpm --filter @sahaj/api build
+    startCommand: pnpm --filter @sahaj/api start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_PORT
+        value: 10000
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: DEMO_MODE
+        value: mock
+      - key: MONGODB_URI
+        sync: false # Set your MongoDB Atlas URI in Render dashboard
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false # Set your frontend domain (e.g., https://sahaj-web.onrender.com or Vercel URL)
+
+  # Next.js Frontend
+  - type: web
+    name: sahaj-web
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @sahaj/shared build && pnpm --filter @sahaj/web build
+    startCommand: pnpm --filter @sahaj/web start -- -p $PORT
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false # Point to https://sahaj-api.onrender.com

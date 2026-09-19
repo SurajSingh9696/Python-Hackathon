@@ -1,0 +1,7 @@
+/**
+ * n8n workflow placeholder directory.
+ * Phase 8 adds:
+ *   - document_processed_notification.json
+ *   - journey_reminder.json
+ *   - human_escalation.json
+ */

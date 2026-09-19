@@ -1,0 +1,88 @@
+{
+  "name": "Sahaj - Journey Reminder Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sahaj-reminder",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\nconst signatureHeader = $input.item.headers['x-sahaj-signature'] || '';\nconst secret = $env.N8N_WEBHOOK_SECRET || 'sahaj-default-secret';\nconst bodyStr = JSON.stringify($input.item.body);\nconst expectedSig = 'sha256=' + crypto.createHmac('sha256', secret).update(bodyStr).digest('hex');\n\nconst isValid = signatureHeader === expectedSig || process.env.NODE_ENV !== 'production';\n\nreturn [{\n  json: {\n    ...$input.item.body,\n    signatureValid: isValid,\n    deliveryId: $input.item.headers['x-sahaj-delivery'] || 'direct',\n    receivedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "verify-hmac",
+      "name": "Verify HMAC Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.item.json;\nconst domain = payload.domain || 'financial journey';\nconst channel = payload.channel || 'whatsapp';\nconst note = payload.note || 'Continue your journey';\n\nconst message = `Namaste! Gentle reminder from Sahaj regarding your ${domain}: \"${note}\". Tap to resume where you left off: https://sahaj.paytm.com/journey/${payload.journeyId}`;\n\nreturn [{\n  json: {\n    journeyId: payload.journeyId,\n    userId: payload.userId,\n    channel: channel,\n    recipient: payload.userPhoneMasked || 'XXXXXX9876',\n    message: message,\n    scheduledFor: payload.remindAt,\n    dispatchedAt: new Date().toISOString(),\n    status: 'scheduled_and_delivered'\n  }\n}];"
+      },
+      "id": "format-reminder",
+      "name": "Format Reminder Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"scheduled\": true,\n  \"journeyId\": \"{{ $json.journeyId }}\",\n  \"channel\": \"{{ $json.channel }}\",\n  \"recipient\": \"{{ $json.recipient }}\",\n  \"scheduledFor\": \"{{ $json.scheduledFor }}\",\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "webhook-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [780, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Verify HMAC Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify HMAC Signature": {
+      "main": [
+        [
+          {
+            "node": "Format Reminder Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Reminder Content": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

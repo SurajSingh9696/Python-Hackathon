@@ -1,0 +1,145 @@
+{
+  "name": "Sahaj - Document Processed Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sahaj-document-processed",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\n// Verify HMAC-SHA256 signature from Sahaj API\nconst signatureHeader = $input.item.headers['x-sahaj-signature'] || '';\nconst secret = $env.N8N_WEBHOOK_SECRET || 'sahaj-default-secret';\nconst bodyStr = JSON.stringify($input.item.body);\nconst expectedSig = 'sha256=' + crypto.createHmac('sha256', secret).update(bodyStr).digest('hex');\n\nconst isValid = signatureHeader === expectedSig || process.env.NODE_ENV !== 'production';\n\nreturn [{\n  json: {\n    ...$input.item.body,\n    signatureValid: isValid,\n    deliveryId: $input.item.headers['x-sahaj-delivery'] || 'direct',\n    receivedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "verify-hmac",
+      "name": "Verify HMAC Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "operation": "equal",
+              "value2": "verified"
+            }
+          ]
+        }
+      },
+      "id": "check-status",
+      "name": "Is Verified?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const doc = $input.item.json;\nconst docLabel = doc.docType === 'income_proof' ? 'Income Proof (Salary Slip)' : (doc.docType === 'admission_letter' ? 'College Admission Letter' : 'Identity Document');\n\nconst msg = `Namaste! Sahaj Update: Your ${docLabel} has been verified successfully. Your loan application is now ready for comparison. Open your journey: https://sahaj.paytm.com/journey/${doc.journeyId}`;\n\nreturn [{\n  json: {\n    journeyId: doc.journeyId,\n    userId: doc.userId,\n    channel: 'whatsapp',\n    recipient: doc.userPhoneMasked || 'XXXXXX9876',\n    message: msg,\n    status: 'sent',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-success-msg",
+      "name": "Format Success Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const doc = $input.item.json;\nconst msg = `Sahaj Notice: Your uploaded document requires human review. Our verification officer will review it shortly. Reference: ${doc.docId}`;\n\nreturn [{\n  json: {\n    journeyId: doc.journeyId,\n    userId: doc.userId,\n    channel: 'sms',\n    recipient: doc.userPhoneMasked || 'XXXXXX9876',\n    message: msg,\n    status: 'queued_review',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-review-msg",
+      "name": "Format Review Needed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 420]
+    },
+    {
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"notified\": true,\n  \"journeyId\": \"{{ $json.journeyId }}\",\n  \"channel\": \"{{ $json.channel }}\",\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "webhook-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1020, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Verify HMAC Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify HMAC Signature": {
+      "main": [
+        [
+          {
+            "node": "Is Verified?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Verified?": {
+      "main": [
+        [
+          {
+            "node": "Format Success Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Review Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Success Message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Review Needed": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
