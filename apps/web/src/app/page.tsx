@@ -13,34 +13,50 @@ const CATEGORIES = [
   {
     icon: '🎓',
     title: 'Higher Education Loans',
-    desc: 'Up to ₹1.5 Cr for India & abroad studies. Moratorium & 80E tax benefits.',
+    tag: 'Moratorium & 80E',
+    tagColor: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-800',
+    accentColor: 'from-[#0F766E] to-[#22D3EE]',
+    iconBg: 'bg-teal-50 text-teal-600 dark:bg-teal-900/30',
+    desc: 'Up to ₹1.5 Cr for India & abroad studies. Flexible repayment & 80E tax benefits.',
     query: 'Mujhe Germany me MS ke liye 30 lakh ka education loan chahiye, salary 75 hazar hai',
   },
   {
     icon: '🏥',
     title: 'Family Health Cover',
-    desc: '100% cashless hospital network, zero room rent capping, pre-existing cover.',
+    tag: '100% Cashless',
+    tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
+    accentColor: 'from-[#10B981] to-[#0F766E]',
+    iconBg: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30',
+    desc: '10,000+ network hospitals, zero room rent capping, instant claim guidance.',
     query: 'Family ke liye 10 lakh ka comprehensive health cover chahiye, 4 members hain',
   },
   {
     icon: '⚡',
     title: 'Instant Personal Credit',
-    desc: 'Calculated reducing EMI from 10.5% p.a. Zero hidden fees or foreclosure charge.',
+    tag: 'From 10.5% p.a.',
+    tagColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
+    accentColor: 'from-[#F59E0B] to-[#FBBF24]',
+    iconBg: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30',
+    desc: 'Calculated reducing EMI from 10.5% p.a. Zero hidden fees or foreclosure penalty.',
     query: 'Home improvement ke liye 5 lakh ka personal loan chahiye, lowest EMI options kya hain',
   },
   {
     icon: '🏢',
     title: 'MSME & Business Capital',
-    desc: 'Collateral-free working capital under CGTMSE with fast in-principle sanction.',
+    tag: 'CGTMSE Covered',
+    tagColor: 'bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800',
+    accentColor: 'from-[#06B6D4] to-[#0F766E]',
+    iconBg: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30',
+    desc: 'Working capital under CGTMSE guarantee with transparent eligibility calculation.',
     query: 'Business expansion ke liye 20 lakh working capital loan chahiye with flexible repayment',
   },
 ];
 
 const TRUST_STATS = [
-  { value: '₹2,500+ Cr', label: 'Guided & Calculated' },
-  { value: '100%', label: 'Deterministic Financial Math' },
-  { value: '15+', label: 'RBI-Regulated Partners' },
-  { value: '< 1 Sec', label: 'Instant Eligibility Analysis' },
+  { value: '₹2,500+ Cr', label: 'Guided & Calculated', icon: '💰', badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { value: '100%', label: 'Deterministic Math', icon: '⚡', badgeBg: 'bg-teal-50 text-teal-700 border-teal-200' },
+  { value: '15+', label: 'RBI-Regulated Partners', icon: '🏛️', badgeBg: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+  { value: '< 1 Sec', label: 'Instant Evaluation', icon: '⏱️', badgeBg: 'bg-amber-50 text-amber-700 border-amber-200' },
 ];
 
 export default function LandingPage() {
@@ -127,12 +143,21 @@ export default function LandingPage() {
               <Link
                 key={i}
                 href={`/journey?q=${encodeURIComponent(cat.query)}`}
-                className="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[#0F766E]/50 hover:shadow-[var(--shadow-card-hover)] transition-all flex flex-col justify-between group"
+                className="relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700/80 hover:border-[#0F766E]/60 hover:shadow-md transition-all duration-200 flex flex-col justify-between group overflow-hidden"
               >
+                {/* Vibrant accent stripe on top of card */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.accentColor}`} />
+
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] dark:bg-[#18332F] flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition-transform">
-                    {cat.icon}
+                  <div className="flex items-center justify-between mb-3.5 pt-1">
+                    <div className={`w-10 h-10 rounded-xl ${cat.iconBg} flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform`}>
+                      {cat.icon}
+                    </div>
+                    <span className={`text-[10px] font-bold tracking-tight px-2.5 py-0.5 rounded-full border ${cat.tagColor}`}>
+                      {cat.tag}
+                    </span>
                   </div>
+
                   <h3 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[#0F766E] dark:group-hover:text-[#14B8A6] transition-colors">
                     {cat.title}
                   </h3>
@@ -140,8 +165,9 @@ export default function LandingPage() {
                     {cat.desc}
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[var(--border-default)] flex items-center justify-between text-xs font-semibold text-[#0F766E] dark:text-[#14B8A6]">
-                  <span>Start Plan</span>
+
+                <div className="mt-4 pt-3 border-t border-[#E2ECE9] dark:border-slate-700/60 flex items-center justify-between text-xs font-bold text-[#0F766E] dark:text-[#14B8A6]">
+                  <span>Explore Plan</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </div>
               </Link>
@@ -149,14 +175,18 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* ── Trust Metrics Row ───────────────────────────────── */}
-        <div className="w-full mt-12 py-6 px-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {/* ── Trust Metrics Row with Vibrant Badges ───────────── */}
+        <div className="w-full mt-12 py-6 px-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700/80 shadow-xs grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {TRUST_STATS.map((stat, i) => (
-            <div key={i} className="flex flex-col items-center justify-center">
-              <span className="font-display font-bold text-2xl md:text-3xl text-[var(--color-ink-indigo)] dark:text-[var(--color-signal-cyan)] tabular-nums">
+            <div key={i} className="flex flex-col items-center justify-center gap-1">
+              <span className={`text-xs px-2 py-0.5 rounded-md border font-semibold ${stat.badgeBg} flex items-center gap-1 mb-1`}>
+                <span>{stat.icon}</span>
+                <span>Verified</span>
+              </span>
+              <span className="font-display font-bold text-2xl md:text-3xl text-[#0F766E] dark:text-[#22D3EE] tabular-nums">
                 {stat.value}
               </span>
-              <span className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+              <span className="text-xs text-[var(--text-secondary)] font-medium">
                 {stat.label}
               </span>
             </div>

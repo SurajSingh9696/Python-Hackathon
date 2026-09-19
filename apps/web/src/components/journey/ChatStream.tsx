@@ -136,33 +136,46 @@ function MessageBubble({
   }
 
   return (
-    <div className="self-start max-w-2xl p-4 rounded-2xl rounded-tl-sm bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-primary)] text-base leading-relaxed shadow-[var(--shadow-card)] flex flex-col gap-2 relative group">
+    <div className="self-start max-w-2xl p-4 sm:p-5 rounded-2xl rounded-tl-sm bg-white dark:bg-[#132825] border border-[#E2ECE9] dark:border-teal-900/50 text-[#111827] dark:text-[#F0FDF4] text-base leading-relaxed shadow-xs flex flex-col gap-2.5 relative group">
+      {/* Assistant Header Pill */}
+      <div className="flex items-center justify-between pb-1.5 border-b border-[#E2ECE9] dark:border-teal-900/40 text-xs">
+        <div className="flex items-center gap-2 font-bold text-[#0F766E] dark:text-[#22D3EE]">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Sahaj Intelligence</span>
+        </div>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-800">
+          Deterministic 100%
+        </span>
+      </div>
+
       <FormatMessageContent content={message.content} onTermClick={onTermClick} />
 
       {/* Audio Playback Toolbar on Assistant Message */}
-      <div className="flex items-center justify-between pt-2 mt-1 border-t border-[var(--border-default)]/60 text-xs text-[var(--text-secondary)]">
+      <div className="flex items-center justify-between pt-2 mt-1 border-t border-[#E2ECE9] dark:border-teal-900/40 text-xs text-[#64748B]">
         <div className="flex items-center gap-2">
           {isSpeaking ? (
-            <div className="flex items-center gap-1.5 text-[#0F766E] dark:text-[#22D3EE] font-medium">
-              <span className="flex items-end gap-0.5 h-3">
-                <span className="w-0.5 h-2 bg-[#0F766E] dark:bg-[#22D3EE] animate-pulse" />
-                <span className="w-0.5 h-3.5 bg-[#0F766E] dark:bg-[#22D3EE] animate-ping" />
-                <span className="w-0.5 h-1.5 bg-[#0F766E] dark:bg-[#22D3EE] animate-pulse" />
+            <div className="flex items-center gap-1.5 text-[#0F766E] dark:text-[#22D3EE] font-semibold">
+              <span className="flex items-end gap-0.5 h-3.5">
+                <span className="w-1 h-2 bg-[#10B981] animate-pulse rounded-full" />
+                <span className="w-1 h-3.5 bg-[#0F766E] animate-ping rounded-full" />
+                <span className="w-1 h-1.5 bg-[#06B6D4] animate-pulse rounded-full" />
               </span>
-              <span>Speaking response...</span>
+              <span>Speaking audio...</span>
             </div>
           ) : (
-            <span className="text-[11px] opacity-70">Sahaj AI Verified</span>
+            <span className="text-[11px] font-medium text-[#64748B] flex items-center gap-1">
+              <span className="text-emerald-600">✓</span> Verified Guidance
+            </span>
           )}
         </div>
 
         <button
           type="button"
           onClick={onToggleSpeak}
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all text-xs font-medium ${
+          className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all text-xs font-semibold ${
             isSpeaking
-              ? 'bg-[#0F766E] text-white shadow-sm'
-              : 'hover:bg-[#0F766E]/10 text-[var(--text-secondary)] hover:text-[#0F766E] dark:hover:text-[#22D3EE]'
+              ? 'bg-[#0F766E] text-white shadow-xs'
+              : 'bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-800'
           }`}
           title={isSpeaking ? 'Stop speaking' : 'Read response aloud'}
         >
@@ -209,14 +222,15 @@ function FormatMessageContent({
               key={i}
               type="button"
               onClick={() => onTermClick(lower)}
-              className="font-semibold text-[var(--color-signal-cyan)] hover:underline inline cursor-pointer"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-teal-50 hover:bg-teal-100 text-teal-800 dark:bg-teal-950/50 dark:text-teal-300 font-bold border border-teal-200 dark:border-teal-800 text-xs transition-all mx-0.5 cursor-pointer shadow-xs"
               title={`Explain ${word}`}
             >
-              {word}
+              <span>💡</span>
+              <span>{word}</span>
             </button>
           );
         }
-        return <strong key={i} className="font-semibold text-[var(--text-primary)]">{word}</strong>;
+        return <strong key={i} className="font-bold text-[#111827] dark:text-[#F0FDF4]">{word}</strong>;
       }
       return <span key={i}>{token}</span>;
     });

@@ -91,8 +91,7 @@ export default function RootLayout({
             __html: `
               try {
                 const stored = localStorage.getItem('sahaj-theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const theme = stored ?? (prefersDark ? 'dark' : 'light');
+                const theme = stored ?? 'light';
                 document.documentElement.setAttribute('data-theme', theme);
               } catch(e) {}
             `,

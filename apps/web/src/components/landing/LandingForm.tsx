@@ -6,9 +6,9 @@ import { MicrophoneIcon } from '../common/Icons';
 import { speechInput } from '../../lib/voiceEngine';
 
 const EXAMPLE_PROMPTS = [
-  { en: 'Education loan of ₹25 lakh for MS abroad', query: 'Mujhe abroad MS ke liye ₹25 lakh ka education loan chahiye, salary ₹65,000 hai' },
-  { en: 'Comprehensive health cover for family', query: 'Family ke liye ₹10 lakh ka health cover chahiye, 4 members hain' },
-  { en: 'Personal loan for home renovation', query: 'Home renovation ke liye ₹5 lakh personal loan chahiye urgent' },
+  { icon: '🎓', tag: 'Education', en: 'Education loan of ₹25L for MS abroad', query: 'Mujhe abroad MS ke liye ₹25 lakh ka education loan chahiye, salary ₹65,000 hai' },
+  { icon: '🏥', tag: 'Health', en: 'Comprehensive health cover for family', query: 'Family ke liye ₹10 lakh ka health cover chahiye, 4 members hain' },
+  { icon: '⚡', tag: 'Personal', en: 'Personal loan for home renovation', query: 'Home renovation ke liye ₹5 lakh personal loan chahiye urgent' },
 ];
 
 export function LandingForm() {
@@ -104,6 +104,26 @@ export function LandingForm() {
           </div>
         )}
 
+        {/* Vibrant Feature Micro-Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-[11px] font-semibold text-[#475569]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            RBI Regulated Network
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 shadow-xs">
+            <span>⚡</span>
+            100% Math Guarantee
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200 shadow-xs">
+            <span>🎙️</span>
+            Trilingual Voice AI
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 shadow-xs">
+            <span>🔒</span>
+            Zero Spam Policy
+          </span>
+        </div>
+
         {/* Quick prompt suggestions */}
         <div className="flex flex-col items-center gap-3 mt-6">
           <div className="flex flex-wrap gap-2 justify-center" role="list" aria-label="Example questions">
@@ -112,10 +132,11 @@ export function LandingForm() {
                 key={i}
                 type="button"
                 onClick={() => fillPrompt(p.query)}
-                className="px-4 py-2 rounded-full text-xs font-medium bg-white dark:bg-[#1E293B] hover:bg-[#0F766E]/5 border border-[#DDE8E6] dark:border-slate-700 hover:border-[#0F766E]/60 text-[#475569] dark:text-slate-300 hover:text-[#0F766E] transition-all shadow-sm"
+                className="px-4 py-2 rounded-full text-xs font-semibold bg-white dark:bg-[#1E293B] hover:bg-[#0F766E]/5 border border-[#E2ECE9] dark:border-slate-700 hover:border-[#0F766E]/60 text-[#334155] dark:text-slate-200 hover:text-[#0F766E] transition-all shadow-xs flex items-center gap-1.5"
                 role="listitem"
               >
-                {p.en}
+                <span>{p.icon}</span>
+                <span>{p.en}</span>
               </button>
             ))}
           </div>
