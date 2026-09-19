@@ -64,15 +64,29 @@ export async function buildApp(config: Config) {
   const allowedOrigins = config.CORS_ORIGINS.split(',').map((o) => o.trim());
   await app.register(cors, {
     origin: (origin, cb) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
+        cb(null, true);
+        return;
+      }
+      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      if (isLocal || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
         cb(null, true);
       } else {
-        cb(new Error('Not allowed by CORS'), false);
+        cb(null, false);
       }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'X-Request-ID', 'X-CSRF-Token'],
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-Request-ID',
+      'X-CSRF-Token',
+      'Cache-Control',
+      'Last-Event-ID',
+    ],
+    exposedHeaders: ['Content-Type', 'X-Request-ID'],
   });
 
   // Rate limiting
@@ -91,7 +105,7 @@ export async function buildApp(config: Config) {
     secret: config.SESSION_SECRET,
     parseOptions: {
       httpOnly: true,
-      sameSite: 'strict' as const,
+      sameSite: config.NODE_ENV === 'production' ? ('none' as const) : ('lax' as const),
       secure: config.NODE_ENV === 'production',
       maxAge: config.SESSION_MAX_AGE_SECONDS,
       path: '/',

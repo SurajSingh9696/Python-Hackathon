@@ -6,9 +6,6 @@ const nextConfig = {
   // Strict mode for catching React issues early
   reactStrictMode: true,
 
-  // Output standalone build for containerized deployments (Docker, Render, etc.)
-  output: 'standalone',
-
   // Disable the X-Powered-By header
   poweredByHeader: false,
 

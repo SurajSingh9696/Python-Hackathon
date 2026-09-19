@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LandingForm } from '@/components/landing/LandingForm';
-import { LandingThread3D } from '@/components/thread3d/LandingThread3D';
 import { DemoBadge } from '@/components/common/DemoBadge';
 import { SparklesIcon, ShieldCheckIcon, CheckCircleIcon } from '@/components/common/Icons';
 
@@ -78,9 +77,15 @@ export default function LandingPage() {
 
       {/* ── Hero ────────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 max-w-6xl mx-auto w-full">
-        {/* Interactive 3D Hero Centerpiece */}
-        <div className="mb-6 flex items-center justify-center">
-          <LandingThread3D />
+        {/* Clean Fintech Trust Badge */}
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white dark:bg-[#1E293B] border border-[#DDE8E6] dark:border-teal-900/40 shadow-sm text-xs font-semibold text-[#0F766E] dark:text-[#22D3EE] mb-8 hover:border-[#14B8A6] transition-all">
+          <span className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+          <span>AI-Powered Financial Journey Companion</span>
+          <span className="text-[#94A3B8]">·</span>
+          <span className="text-[#F59E0B] font-medium">100% Deterministic Math</span>
         </div>
 
         {/* Headline */}

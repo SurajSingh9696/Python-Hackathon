@@ -6,7 +6,8 @@
  */
 import { SseEventSchema, type SseEvent } from '@sahaj/shared';
 
-const API_BASE = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api';
+const rawApiUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api';
+const API_BASE = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 export interface SseStreamCallbacks {
   onEvent: (event: SseEvent) => void;

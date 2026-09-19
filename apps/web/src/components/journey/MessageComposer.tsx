@@ -93,16 +93,16 @@ export function MessageComposer() {
         </div>
       )}
 
-      <div className="flex items-center gap-2 max-w-4xl mx-auto w-full bg-[var(--bg-surface-alt)] border border-[var(--border-default)] rounded-2xl p-1.5 px-3 shadow-[var(--shadow-card)] focus-within:border-[#0F766E] focus-within:ring-2 focus-within:ring-[#0F766E]/20 transition-all">
+      <div className="flex items-center gap-3 max-w-4xl mx-auto w-full bg-white dark:bg-[#1E293B] border border-[#DDE8E6] dark:border-slate-700 rounded-2xl p-2 px-4 shadow-sm hover:shadow-md focus-within:border-[#0F766E] focus-within:ring-4 focus-within:ring-[#0F766E]/10 transition-all duration-200">
         {/* Voice Input Microphone Button */}
         <button
           type="button"
           onClick={handleToggleVoice}
           disabled={isStreaming}
-          className={`p-2 rounded-xl transition-all flex items-center justify-center shrink-0 ${
+          className={`p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 ${
             isListening
               ? 'bg-red-500 text-white shadow-md animate-pulse scale-105'
-              : 'text-[var(--text-secondary)] hover:text-[#0F766E] hover:bg-[#0F766E]/10'
+              : 'text-[var(--text-secondary)] hover:text-[#0F766E] hover:bg-[#0F766E]/10 dark:hover:text-[#22D3EE]'
           }`}
           title={isListening ? 'Stop listening' : 'Speak to type (Hindi / English / Hinglish)'}
           aria-label={isListening ? 'Stop listening' : 'Voice typing'}
@@ -118,11 +118,11 @@ export function MessageComposer() {
           onChange={(e) => setText(e.target.value)}
           placeholder={
             isListening
-              ? 'Listening to you...'
+              ? 'Listening to you... (Speak now)'
               : t('common', 'composerPlaceholder', language)
           }
           disabled={isStreaming}
-          className="flex-1 bg-transparent outline-none text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-sm sm:text-base min-w-0 py-1"
+          className="flex-1 bg-transparent outline-none text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-sm sm:text-base font-normal min-w-0 py-1"
           aria-label="Your response"
         />
 
@@ -130,7 +130,7 @@ export function MessageComposer() {
         <button
           type="submit"
           disabled={!text.trim() || isStreaming}
-          className="shrink-0 bg-[#0F766E] hover:bg-[#115E59] text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-xl active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+          className="shrink-0 bg-[#0F766E] hover:bg-[#0D655E] text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm hover:shadow"
           aria-label="Send message"
         >
           {t('common', 'send', language)}

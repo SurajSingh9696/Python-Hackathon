@@ -7,7 +7,7 @@ import { JourneyHeader } from '../../components/journey/JourneyHeader';
 import { ChatStream } from '../../components/journey/ChatStream';
 import { MessageComposer } from '../../components/journey/MessageComposer';
 import { IntentChips } from '../../components/journey/IntentChips';
-import { JourneyThreadCanvas } from '../../components/thread3d/JourneyThreadCanvas';
+import { ThreadIndicator } from '../../components/journey/ThreadIndicator';
 import { AffordabilityArc } from '../../components/journey/AffordabilityArc';
 import { CompareSheet } from '../../components/journey/CompareSheet';
 import { DocChecklist } from '../../components/journey/DocChecklist';
@@ -51,7 +51,7 @@ function JourneyContent() {
         >
           {/* Thread Progress for mobile (desktop has it in side panel) */}
           <div className="md:hidden px-4 pt-3">
-            <JourneyThreadCanvas />
+            <ThreadIndicator className="bg-[var(--bg-surface)] p-3 rounded-2xl border border-[var(--border-default)] shadow-sm" />
           </div>
 
           {/* Conversation history & streaming tokens */}
@@ -75,7 +75,7 @@ function JourneyContent() {
         >
           {/* Thread Resolution Indicator */}
           <div className="hidden md:block">
-            <JourneyThreadCanvas />
+            <ThreadIndicator className="bg-[var(--bg-surface)] p-3.5 rounded-2xl border border-[var(--border-default)] shadow-sm" />
           </div>
 
           {/* Repayment Capacity & Affordability */}

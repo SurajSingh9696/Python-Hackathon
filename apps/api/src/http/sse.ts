@@ -14,6 +14,22 @@ export class SseStream {
   constructor(reply: FastifyReply) {
     this.reply = reply;
 
+    // Copy all Fastify queued headers (CORS, cookies, security, etc.) to raw response before flushing
+    const fastifyHeaders = reply.getHeaders();
+    for (const [key, val] of Object.entries(fastifyHeaders)) {
+      if (val !== undefined && !reply.raw.hasHeader(key)) {
+        reply.raw.setHeader(key, val);
+      }
+    }
+
+    // Explicitly guarantee CORS headers for cross-origin SSE connections
+    const origin = reply.request.headers['origin'];
+    if (origin && !reply.raw.hasHeader('access-control-allow-origin')) {
+      reply.raw.setHeader('Access-Control-Allow-Origin', origin);
+      reply.raw.setHeader('Access-Control-Allow-Credentials', 'true');
+      reply.raw.setHeader('Vary', 'Origin');
+    }
+
     // Set SSE headers
     reply.raw.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
     reply.raw.setHeader('Cache-Control', 'no-cache, no-transform');

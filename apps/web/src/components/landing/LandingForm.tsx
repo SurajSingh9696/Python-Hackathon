@@ -55,17 +55,17 @@ export function LandingForm() {
   return (
     <div className="w-full max-w-2xl flex flex-col items-center">
       <form action="/journey" method="GET" className="w-full" aria-label="Start your financial journey">
-        <div className="relative group">
-          {/* Subtle glowing ambient border in warm orange to cyan */}
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F59E0B] to-[#22D3EE] rounded-2xl opacity-25 group-hover:opacity-45 blur transition duration-300 pointer-events-none" />
+        <div className="relative group w-full">
+          {/* Subtle warm glow on hover */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F59E0B]/30 via-[#0F766E]/20 to-[#22D3EE]/30 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-300 pointer-events-none" />
 
-          <div className="relative flex items-center gap-2 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-2xl px-4 py-3 shadow-[var(--shadow-card)] group-hover:shadow-[var(--shadow-card-hover)] focus-within:border-[#0F766E] focus-within:ring-2 focus-within:ring-[#0F766E]/20 transition-all">
+          <div className="relative flex items-center gap-3 bg-white dark:bg-[#1E293B] border border-[#DDE8E6] dark:border-slate-700 rounded-2xl px-4 sm:px-5 py-3.5 shadow-sm hover:shadow-md focus-within:border-[#0F766E] focus-within:ring-4 focus-within:ring-[#0F766E]/10 transition-all duration-200">
             <input
               ref={inputRef}
               name="q"
               type="text"
               placeholder="Tell us what you need (or tap mic to speak)..."
-              className="flex-1 bg-transparent outline-none text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-base md:text-lg min-w-0"
+              className="flex-1 bg-transparent outline-none text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-base md:text-lg font-normal min-w-0"
               aria-label="Describe your financial need"
               autoComplete="off"
               autoFocus
@@ -75,10 +75,10 @@ export function LandingForm() {
             <button
               type="button"
               onClick={handleToggleVoice}
-              className={`p-2 rounded-xl transition-all ${
+              className={`p-2.5 rounded-xl transition-all ${
                 isRecording
                   ? 'bg-red-500 text-white animate-pulse shadow-md'
-                  : 'text-[var(--text-secondary)] hover:text-[#0F766E] hover:bg-[#0F766E]/10'
+                  : 'text-[#64748B] hover:text-[#0F766E] hover:bg-[#0F766E]/10 dark:hover:text-[#22D3EE]'
               }`}
               title={isRecording ? 'Listening... click to finish' : 'Speak your query (Voice Typing in Hindi/English)'}
               aria-label={isRecording ? 'Stop voice recording' : 'Start voice typing'}
@@ -88,7 +88,7 @@ export function LandingForm() {
 
             <button
               type="submit"
-              className="shrink-0 bg-[#0F766E] hover:bg-[#115E59] text-white font-semibold text-sm px-5 py-2.5 rounded-xl active:scale-95 shadow-md shadow-[#0F766E]/25 transition-all focus-visible:outline-2 focus-visible:outline-[#0F766E]"
+              className="shrink-0 bg-[#0F766E] hover:bg-[#0D655E] text-white font-semibold text-sm px-6 py-2.5 rounded-xl active:scale-95 shadow-sm hover:shadow transition-all duration-150 focus-visible:outline-2 focus-visible:outline-[#0F766E]"
               aria-label="Start journey"
             >
               Let&apos;s go →
@@ -112,7 +112,7 @@ export function LandingForm() {
                 key={i}
                 type="button"
                 onClick={() => fillPrompt(p.query)}
-                className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-surface)] hover:bg-[#0F766E]/5 border border-[var(--border-default)] hover:border-[#0F766E]/60 text-[var(--text-secondary)] hover:text-[#0F766E] transition-all shadow-sm"
+                className="px-4 py-2 rounded-full text-xs font-medium bg-white dark:bg-[#1E293B] hover:bg-[#0F766E]/5 border border-[#DDE8E6] dark:border-slate-700 hover:border-[#0F766E]/60 text-[#475569] dark:text-slate-300 hover:text-[#0F766E] transition-all shadow-sm"
                 role="listitem"
               >
                 {p.en}
