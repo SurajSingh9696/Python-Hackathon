@@ -28,21 +28,36 @@ export async function startMessageStream(
   const url = `${API_BASE}/journeys/${journeyId}/messages`;
 
   let response: Response;
+  const requestInit: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'text/event-stream',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ content }),
+    signal,
+  };
+
   try {
-    response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'text/event-stream',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ content }),
-      signal,
-    });
+    response = await fetch(url, requestInit);
   } catch (err) {
     if ((err as Error).name === 'AbortError') return;
-    callbacks.onError?.(err instanceof Error ? err : new Error(String(err)));
-    return;
+
+    // Fallback through relative Next.js proxy if direct cloud fetch was blocked by CORS
+    if (typeof window !== 'undefined' && url.startsWith('http')) {
+      try {
+        const fallbackUrl = `/api/journeys/${journeyId}/messages`;
+        response = await fetch(fallbackUrl, requestInit);
+      } catch (fallbackErr) {
+        if ((fallbackErr as Error).name === 'AbortError') return;
+        callbacks.onError?.(fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr)));
+        return;
+      }
+    } else {
+      callbacks.onError?.(err instanceof Error ? err : new Error(String(err)));
+      return;
+    }
   }
 
   if (!response.ok) {

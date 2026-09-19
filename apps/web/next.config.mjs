@@ -45,6 +45,21 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['three', 'motion'],
   },
+
+  // Proxy /api/* to backend server (prevents cross-origin CORS & preflight blocking)
+  async rewrites() {
+    const rawUrl =
+      process.env.BACKEND_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      'https://python-hackathon-web-service.onrender.com';
+    const baseUrl = rawUrl.trim().replace(/\/api\/?$/, '').replace(/\/+$/, '');
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${baseUrl}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

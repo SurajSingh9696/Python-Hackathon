@@ -10,6 +10,25 @@ function getApiBase(): string {
 
 const API_BASE = getApiBase();
 
+async function apiFetch(endpoint: string, init?: RequestInit): Promise<Response> {
+  const primaryUrl = `${API_BASE}${endpoint}`;
+  try {
+    return await fetch(primaryUrl, init);
+  } catch (err) {
+    // If the browser fetch fails (e.g. CORS preflight blocked on direct cloud URL)
+    // seamlessly fall back to relative /api proxy via Next.js rewrites
+    if (typeof window !== 'undefined' && primaryUrl.startsWith('http') && !endpoint.startsWith('http')) {
+      try {
+        const fallbackUrl = `/api${endpoint}`;
+        return await fetch(fallbackUrl, init);
+      } catch {
+        // Fallback failed too, rethrow original error
+      }
+    }
+    throw err;
+  }
+}
+
 export interface CreateJourneyPayload {
   language?: 'en' | 'hi' | 'hinglish';
   initialMessage?: string;
@@ -27,7 +46,7 @@ export interface JourneyResponse {
 }
 
 export async function createJourney(payload: CreateJourneyPayload = {}): Promise<JourneyResponse> {
-  const res = await fetch(`${API_BASE}/journeys`, {
+  const res = await apiFetch('/journeys', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -41,7 +60,7 @@ export async function createJourney(payload: CreateJourneyPayload = {}): Promise
 }
 
 export async function getJourney(id: string): Promise<JourneyResponse> {
-  const res = await fetch(`${API_BASE}/journeys/${id}`, {
+  const res = await apiFetch(`/journeys/${id}`, {
     credentials: 'include',
   });
   if (!res.ok) {
@@ -55,7 +74,7 @@ export async function sendFeedback(payload: {
   vote: 'up' | 'down';
   comment?: string;
 }): Promise<{ status: string }> {
-  const res = await fetch(`${API_BASE}/feedback`, {
+  const res = await apiFetch('/feedback', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -66,7 +85,7 @@ export async function sendFeedback(payload: {
 }
 
 export async function explainTerm(term: string): Promise<{ term: string; explanation: string; simpleAnalogy?: string }> {
-  const res = await fetch(`${API_BASE}/explain`, {
+  const res = await apiFetch('/explain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -105,7 +124,7 @@ export async function uploadDocument(
     mimeType?: string;
   }
 ): Promise<UploadDocumentResponse> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/documents`, {
+  const res = await apiFetch(`/journeys/${journeyId}/documents`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -119,7 +138,7 @@ export async function uploadDocument(
 }
 
 export async function listDocuments(journeyId: string): Promise<DocumentItem[]> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/documents`, {
+  const res = await apiFetch(`/journeys/${journeyId}/documents`, {
     credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to list documents');
@@ -131,7 +150,7 @@ export async function deleteDocument(
   journeyId: string,
   docId: string
 ): Promise<{ success: boolean; stateRevertedTo?: string }> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/documents/${docId}`, {
+  const res = await apiFetch(`/journeys/${journeyId}/documents/${docId}`, {
     method: 'DELETE',
     credentials: 'include',
   });
@@ -155,7 +174,7 @@ export async function scheduleReminder(
   journeyId: string,
   payload: ReminderPayload
 ): Promise<ReminderResponse> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/remind`, {
+  const res = await apiFetch(`/journeys/${journeyId}/remind`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -184,7 +203,7 @@ export async function escalateJourney(
   journeyId: string,
   payload: EscalatePayload
 ): Promise<EscalateResponse> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/escalate`, {
+  const res = await apiFetch(`/journeys/${journeyId}/escalate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -207,7 +226,7 @@ export interface EscalationRecord {
 }
 
 export async function getEscalations(journeyId: string): Promise<EscalationRecord[]> {
-  const res = await fetch(`${API_BASE}/journeys/${journeyId}/escalations`, {
+  const res = await apiFetch(`/journeys/${journeyId}/escalations`, {
     credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to fetch escalations');
@@ -223,7 +242,7 @@ export interface OutboxStatusResponse {
 }
 
 export async function getOutboxStatus(): Promise<OutboxStatusResponse> {
-  const res = await fetch(`${API_BASE}/outbox/status`, {
+  const res = await apiFetch('/outbox/status', {
     credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to fetch outbox status');
