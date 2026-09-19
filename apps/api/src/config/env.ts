@@ -12,7 +12,7 @@ const envSchema = z.object({
   DEMO_MODE: z.enum(['mock', 'live']).default('mock'),
 
   // Server
-  API_PORT: z.coerce.number().int().positive().default(3001),
+  API_PORT: z.coerce.number().int().positive().default(Number(process.env['PORT']) || 3001),
   API_HOST: z.string().default('0.0.0.0'),
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
 

@@ -145,6 +145,25 @@ export async function buildApp(config: Config) {
   const { documentsRoutes } = await import('../routes/documents.js');
   const { automationRoutes } = await import('../routes/automation.js');
 
+  // Root & Health check routes for Render / PaaS health probers
+  app.get('/', async (_request, reply) => {
+    return reply.status(200).send({
+      status: 'ok',
+      service: 'sahaj-api',
+      version: '0.1.0',
+      health: '/api/health',
+    });
+  });
+
+  app.get('/health', async (_request, reply) => {
+    return reply.status(200).send({
+      status: 'ok',
+      service: 'sahaj-api',
+      version: '0.1.0',
+      health: '/api/health',
+    });
+  });
+
   await app.register(healthRoute, { prefix: '/api' });
   await app.register(journeysRoutes, { prefix: '/api' });
   await app.register(interactionsRoutes, { prefix: '/api' });

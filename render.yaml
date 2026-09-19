@@ -7,6 +7,7 @@ services:
     plan: free
     buildCommand: pnpm install --frozen-lockfile && pnpm --filter @sahaj/shared build && pnpm --filter @sahaj/api build
     startCommand: pnpm --filter @sahaj/api start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production

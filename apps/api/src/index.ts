@@ -11,13 +11,17 @@ async function main() {
 
   try {
     await connectMongo(config.MONGODB_URI, config.MONGODB_DB_NAME);
-    app.log.info('MongoDB connected');
-  } catch (err) {
-    app.log.error({ err }, 'MongoDB connection failed — running without DB (mock mode)');
+    app.log.info('MongoDB connected successfully');
+  } catch (err: any) {
+    app.log.warn(
+      `MongoDB connection failed (${err?.message || 'unknown error'}) — running in in-memory mock mode. ` +
+      `To persist journeys and documents, provide a valid MONGODB_URI in your environment settings.`
+    );
   }
 
-  await app.listen({ port: config.API_PORT, host: config.API_HOST });
-  app.log.info(`Sahaj API listening on http://${config.API_HOST}:${config.API_PORT}`);
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : config.API_PORT;
+  await app.listen({ port, host: config.API_HOST });
+  app.log.info(`Sahaj API listening on http://${config.API_HOST}:${port}`);
 }
 
 main().catch((err) => {
