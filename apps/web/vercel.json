@@ -1,12 +1,6 @@
 {
-  "buildCommand": "pnpm --filter @sahaj/shared build && pnpm --filter @sahaj/web build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "pnpm install",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://sahaj-api.railway.app/api/:path*"
-    }
-  ]
+  "buildCommand": "cd ../.. && pnpm --filter @sahaj/shared build && pnpm --filter @sahaj/web build",
+  "installCommand": "cd ../.. && pnpm install"
 }
