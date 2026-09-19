@@ -87,6 +87,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Global input border reset ───────────────────────────────────── */
+input, textarea {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input:focus, textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* ── Money / Numerals ────────────────────────────────────────────── */
 .tabular-nums,
 [class*="amount"],

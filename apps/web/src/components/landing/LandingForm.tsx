@@ -65,7 +65,8 @@ export function LandingForm() {
               name="q"
               type="text"
               placeholder="Tell us what you need (or tap mic to speak)..."
-              className="flex-1 bg-transparent outline-none text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-base md:text-lg font-normal min-w-0"
+              className="flex-1 bg-transparent border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-none shadow-none ring-0 text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-base md:text-lg font-normal min-w-0"
+              style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
               aria-label="Describe your financial need"
               autoComplete="off"
               autoFocus

@@ -122,7 +122,8 @@ export function MessageComposer() {
               : t('common', 'composerPlaceholder', language)
           }
           disabled={isStreaming}
-          className="flex-1 bg-transparent outline-none text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-sm sm:text-base font-normal min-w-0 py-1"
+          className="flex-1 bg-transparent border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-none shadow-none ring-0 text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-sm sm:text-base font-normal min-w-0 py-1"
+          style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           aria-label="Your response"
         />
 
