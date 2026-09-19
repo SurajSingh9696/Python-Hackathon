@@ -50,6 +50,21 @@ export function ChatStream() {
     }
   };
 
+  const emptyStateText = {
+    en: {
+      label: 'Active Financial Ledger',
+      body: 'State your education loan, EMI query, or health insurance need in English. Every recommendation is audited with deterministic calculations.',
+    },
+    hi: {
+      label: 'वित्तीय परामर्श केंद्र',
+      body: 'अपनी शिक्षा लोन, EMI जानकारी, या स्वास्थ्य बीमा की जरूरत बताएं। हर सिफारिश निर्धारक गणनाओं के साथ सत्यापित होगी।',
+    },
+    hinglish: {
+      label: 'Financial Ledger Active',
+      body: 'Apna education loan, EMI query, ya health insurance ka need batayein. Har recommendation deterministic calculations ke saath audited hogi.',
+    },
+  }[language];
+
   return (
     <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-4" aria-live="polite" aria-label="Conversation with Sahaj">
       {messages.length === 0 && !isStreaming && (
@@ -57,9 +72,9 @@ export function ChatStream() {
           <div className="w-10 h-10 rounded-[6px] border border-[var(--rule-line)] bg-[var(--card)] text-[var(--ink-navy)] flex items-center justify-center">
             <Sparkles size={18} />
           </div>
-          <span className="text-label">Active Financial Ledger</span>
+          <span className="text-label">{emptyStateText.label}</span>
           <p className="text-xs font-mono">
-            State your education loan, EMI query, or health insurance need. Every recommendation will be audited and cataloged with deterministic calculations.
+            {emptyStateText.body}
           </p>
         </div>
       )}

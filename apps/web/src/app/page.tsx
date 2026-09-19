@@ -56,9 +56,12 @@ export default function LandingPage() {
     <div className="min-h-[100dvh] flex flex-col bg-[var(--ledger-paper)] text-[var(--ink-navy)] font-sans">
       {/* ── Header: Crisp Ledger Top Bar ─────────────────────────────── */}
       <header className="h-14 px-4 sm:px-8 flex items-center justify-between border-b border-[var(--rule-line)] bg-[var(--card)] sticky top-0 z-40">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span className="font-mono font-bold text-xl tracking-tight text-[var(--ink-navy)]">
             Sahaj
+          </span>
+          <span className="hidden sm:inline font-serif text-base text-[var(--muted-foreground)] tracking-wider select-none" lang="hi" title="Sahaj — in Hindi">
+            · सहज
           </span>
         </div>
 

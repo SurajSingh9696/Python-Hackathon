@@ -24,7 +24,7 @@ export function MessageComposer() {
     }
     const msg = text;
     setText('');
-    await sendMessage(msg);
+    await sendMessage(msg, language);
     inputRef.current?.focus();
   };
 

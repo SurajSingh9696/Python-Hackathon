@@ -6,6 +6,7 @@
  */
 import { SseEventSchema, type SseEvent } from '@sahaj/shared';
 import { simulateMockStream } from './mockFallback';
+import type { Language } from './i18n';
 
 function getApiBase(): string {
   const raw = (process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api').trim().replace(/\/+$/, '');
@@ -24,11 +25,12 @@ export async function startMessageStream(
   journeyId: string,
   content: string,
   callbacks: SseStreamCallbacks,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  language: Language = 'hinglish'
 ): Promise<void> {
   // If journey is mock-generated, skip network and simulate immediately
   if (journeyId.startsWith('mock-')) {
-    await simulateMockStream(content, callbacks, signal);
+    await simulateMockStream(content, callbacks, signal, language);
     return;
   }
 
@@ -64,10 +66,10 @@ export async function startMessageStream(
     }
   }
 
-  // If backend is unreachable or returns error, transparently fall back to mock stream simulation!
+  // If backend is unreachable or returns error, transparently fall back to mock stream simulation
   if (!response || !response.ok || !response.body) {
     console.warn('[SSE] Backend stream unavailable — switching seamlessly to client-side mock simulation.');
-    await simulateMockStream(content, callbacks, signal);
+    await simulateMockStream(content, callbacks, signal, language);
     return;
   }
 

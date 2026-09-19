@@ -12,6 +12,7 @@ import {
   getMockEscalations,
   getMockOutboxStatus,
   getMockExplanation,
+  removeMockDocument,
 } from './mockFallback';
 
 function getApiBase(): string {
@@ -192,9 +193,13 @@ export async function deleteDocument(
       method: 'DELETE',
       credentials: 'include',
     });
-    if (!res.ok) return { success: true, stateRevertedTo: 'checklist_review' };
+    if (!res.ok) {
+      removeMockDocument(docId);
+      return { success: true, stateRevertedTo: 'checklist_review' };
+    }
     return (await res.json()) as { success: boolean; stateRevertedTo?: string };
   } catch {
+    removeMockDocument(docId);
     return { success: true, stateRevertedTo: 'checklist_review' };
   }
 }

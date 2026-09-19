@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import type { SseEvent, LoanProduct, JourneyState, JourneyDomain } from '@sahaj/shared';
 import { createJourney, getJourney } from '../lib/api';
 import { startMessageStream } from '../lib/sseClient';
+import type { Language } from '../lib/i18n';
 
 export interface ChatMessage {
   id: string;
@@ -61,7 +62,7 @@ interface JourneyStoreState {
 
   initJourney: (initialPrompt?: string, language?: 'en' | 'hi' | 'hinglish') => Promise<string>;
   loadJourney: (id: string) => Promise<void>;
-  sendMessage: (text: string) => Promise<void>;
+  sendMessage: (text: string, language?: Language) => Promise<void>;
   handleSseEvent: (event: SseEvent) => void;
   reset: () => void;
 }
@@ -122,7 +123,7 @@ export const useJourneyStore = create<JourneyStoreState>((set, get) => ({
     }
   },
 
-  sendMessage: async (text: string) => {
+  sendMessage: async (text: string, language: Language = 'hinglish') => {
     const trimmed = text.trim();
     if (!trimmed) return;
 
@@ -143,40 +144,50 @@ export const useJourneyStore = create<JourneyStoreState>((set, get) => ({
       isStreaming: true,
       streamingText: '',
       currentStage: 'understanding',
-      stageMessage: 'Analyzing your context...',
+      stageMessage: language === 'hi'
+        ? 'आपका प्रश्न समझा जा रहा है...'
+        : language === 'hinglish'
+          ? 'Aapka context analyze ho raha hai...'
+          : 'Analyzing your context...',
       error: null,
     }));
 
-    await startMessageStream(id, trimmed, {
-      onEvent: (event) => {
-        get().handleSseEvent(event);
+    await startMessageStream(
+      id,
+      trimmed,
+      {
+        onEvent: (event) => {
+          get().handleSseEvent(event);
+        },
+        onError: (err) => {
+          set({ isStreaming: false, error: err.message });
+        },
+        onDone: () => {
+          const remaining = get().streamingText;
+          if (remaining) {
+            set((s) => ({
+              messages: [
+                ...s.messages,
+                {
+                  id: `ai-${Date.now()}`,
+                  role: 'assistant',
+                  content: remaining,
+                  timestamp: new Date(),
+                },
+              ],
+              streamingText: '',
+              isStreaming: false,
+              currentStage: null,
+              stageMessage: null,
+            }));
+          } else {
+            set({ isStreaming: false, currentStage: null, stageMessage: null });
+          }
+        },
       },
-      onError: (err) => {
-        set({ isStreaming: false, error: err.message });
-      },
-      onDone: () => {
-        const remaining = get().streamingText;
-        if (remaining) {
-          set((s) => ({
-            messages: [
-              ...s.messages,
-              {
-                id: `ai-${Date.now()}`,
-                role: 'assistant',
-                content: remaining,
-                timestamp: new Date(),
-              },
-            ],
-            streamingText: '',
-            isStreaming: false,
-            currentStage: null,
-            stageMessage: null,
-          }));
-        } else {
-          set({ isStreaming: false, currentStage: null, stageMessage: null });
-        }
-      },
-    });
+      undefined,
+      language
+    );
   },
 
   handleSseEvent: (event: SseEvent) => {

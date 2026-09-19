@@ -132,21 +132,42 @@ export class SpeechOutputService {
     if (!cleanText) return false;
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 1.05; // natural lively conversational pace
+
+    // Speed: Hindi at natural pace, Hinglish slightly slower for mixed-script clarity
+    utterance.rate = lang === 'hi' ? 0.95 : 1.0;
     utterance.pitch = 1.0;
 
-    // Pick appropriate voice
-    const voices = window.speechSynthesis.getVoices();
-    const targetLang = lang === 'hi' ? 'hi' : 'en';
+    // Attempt voice selection after voices load (some browsers lazy-load)
+    const setVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      let matchedVoice: SpeechSynthesisVoice | undefined;
 
-    // Prefer Indian English or Hindi voices
-    const matchedVoice =
-      voices.find((v) => v.lang.startsWith(targetLang) && (v.lang.includes('IN') || v.name.includes('India'))) ||
-      voices.find((v) => v.lang.startsWith(targetLang)) ||
-      voices[0];
+      if (lang === 'hi') {
+        // Prefer hi-IN voices, then any Hindi voice
+        matchedVoice =
+          voices.find((v) => v.lang === 'hi-IN') ||
+          voices.find((v) => v.lang.startsWith('hi')) ||
+          voices.find((v) => v.name.toLowerCase().includes('hindi'));
+      }
 
-    if (matchedVoice) {
-      utterance.voice = matchedVoice;
+      if (!matchedVoice) {
+        // For Hinglish and English: prefer Indian English voices
+        matchedVoice =
+          voices.find((v) => v.lang === 'en-IN' && v.name.toLowerCase().includes('female')) ||
+          voices.find((v) => v.lang === 'en-IN') ||
+          voices.find((v) => v.lang.startsWith('en') && v.name.toLowerCase().includes('india')) ||
+          voices.find((v) => v.lang.startsWith('en'));
+      }
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+    };
+
+    // Try setting voice immediately, then on voiceschanged if not yet loaded
+    setVoice();
+    if (!utterance.voice && window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.addEventListener('voiceschanged', setVoice, { once: true });
     }
 
     utterance.onend = () => {

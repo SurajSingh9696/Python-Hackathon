@@ -34,6 +34,7 @@ export function JourneyHeader() {
         >
           <ChevronLeft size={16} />
           <span>Sahaj</span>
+          <span className="hidden sm:inline font-serif text-sm text-[var(--muted-foreground)] tracking-wider ml-1 select-none" lang="hi">· सहज</span>
         </Link>
 
         {/* Live Ledger Session Dot */}
