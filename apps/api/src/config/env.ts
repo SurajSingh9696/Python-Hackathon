@@ -14,7 +14,7 @@ const envSchema = z.object({
   // Server
   API_PORT: z.coerce.number().int().positive().default(Number(process.env['PORT']) || 3001),
   API_HOST: z.string().default('0.0.0.0'),
-  CORS_ORIGINS: z.string().default('http://localhost:3000'),
+  CORS_ORIGINS: z.string().default('https://web-one-kohl-70.vercel.app/'),
 
   // Rate limiting
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
