@@ -15,8 +15,6 @@ import {
   calculateAffordability,
   calculateMoratorium,
   calculatePremiumIllustration,
-  findBannedPhrase,
-  findEscalationTrigger,
 } from '@sahaj/shared';
 import { scan, containsInjection } from '../services/outputGuard.js';
 import { createKnowledgeStore } from '../adapters/knowledge/index.js';
