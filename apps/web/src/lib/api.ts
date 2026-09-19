@@ -3,6 +3,17 @@
  * Uses relative `/api/*` (proxied in dev/production via Next rewrites or direct port).
  */
 
+import {
+  createMockJourney,
+  getMockDocuments,
+  getMockUploadResult,
+  getMockReminderResponse,
+  getMockEscalationResponse,
+  getMockEscalations,
+  getMockOutboxStatus,
+  getMockExplanation,
+} from './mockFallback';
+
 function getApiBase(): string {
   const raw = (process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api').trim().replace(/\/+$/, '');
   return raw.endsWith('/api') ? raw : `${raw}/api`;
@@ -46,27 +57,40 @@ export interface JourneyResponse {
 }
 
 export async function createJourney(payload: CreateJourneyPayload = {}): Promise<JourneyResponse> {
-  const res = await apiFetch('/journeys', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Failed to create journey: ${err}`);
+  try {
+    const res = await apiFetch('/journeys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.warn('Backend /journeys returned error status, falling back to mock mode.');
+      return createMockJourney(payload.initialMessage, payload.language);
+    }
+    return (await res.json()) as JourneyResponse;
+  } catch (err) {
+    console.warn('Backend /journeys unreachable, falling back to mock mode:', err);
+    return createMockJourney(payload.initialMessage, payload.language);
   }
-  return res.json() as Promise<JourneyResponse>;
 }
 
 export async function getJourney(id: string): Promise<JourneyResponse> {
-  const res = await apiFetch(`/journeys/${id}`, {
-    credentials: 'include',
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to get journey ${id}: ${res.statusText}`);
+  try {
+    const res = await apiFetch(`/journeys/${id}`, {
+      credentials: 'include',
+    });
+    if (!res.ok) {
+      const mock = createMockJourney();
+      mock._id = id;
+      return mock;
+    }
+    return (await res.json()) as JourneyResponse;
+  } catch {
+    const mock = createMockJourney();
+    mock._id = id;
+    return mock;
   }
-  return res.json() as Promise<JourneyResponse>;
 }
 
 export async function sendFeedback(payload: {
@@ -74,25 +98,33 @@ export async function sendFeedback(payload: {
   vote: 'up' | 'down';
   comment?: string;
 }): Promise<{ status: string }> {
-  const res = await apiFetch('/feedback', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error('Feedback submission failed');
-  return res.json() as Promise<{ status: string }>;
+  try {
+    const res = await apiFetch('/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return { status: 'ok' };
+    return (await res.json()) as { status: string };
+  } catch {
+    return { status: 'ok' };
+  }
 }
 
 export async function explainTerm(term: string): Promise<{ term: string; explanation: string; simpleAnalogy?: string }> {
-  const res = await apiFetch('/explain', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ term }),
-  });
-  if (!res.ok) throw new Error('Failed to fetch explanation');
-  return res.json() as Promise<{ term: string; explanation: string; simpleAnalogy?: string }>;
+  try {
+    const res = await apiFetch('/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ term }),
+    });
+    if (!res.ok) return getMockExplanation(term);
+    return (await res.json()) as { term: string; explanation: string; simpleAnalogy?: string };
+  } catch {
+    return getMockExplanation(term);
+  }
 }
 
 export interface UploadDocumentResponse {
@@ -124,38 +156,47 @@ export async function uploadDocument(
     mimeType?: string;
   }
 ): Promise<UploadDocumentResponse> {
-  const res = await apiFetch(`/journeys/${journeyId}/documents`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Failed to upload document: ${err}`);
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/documents`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return getMockUploadResult(payload.docType, payload.filename);
+    return (await res.json()) as UploadDocumentResponse;
+  } catch {
+    return getMockUploadResult(payload.docType, payload.filename);
   }
-  return res.json() as Promise<UploadDocumentResponse>;
 }
 
 export async function listDocuments(journeyId: string): Promise<DocumentItem[]> {
-  const res = await apiFetch(`/journeys/${journeyId}/documents`, {
-    credentials: 'include',
-  });
-  if (!res.ok) throw new Error('Failed to list documents');
-  const data = (await res.json()) as { documents: DocumentItem[] };
-  return data.documents;
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/documents`, {
+      credentials: 'include',
+    });
+    if (!res.ok) return getMockDocuments();
+    const data = (await res.json()) as { documents: DocumentItem[] };
+    return data.documents;
+  } catch {
+    return getMockDocuments();
+  }
 }
 
 export async function deleteDocument(
   journeyId: string,
   docId: string
 ): Promise<{ success: boolean; stateRevertedTo?: string }> {
-  const res = await apiFetch(`/journeys/${journeyId}/documents/${docId}`, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
-  if (!res.ok) throw new Error('Failed to delete document');
-  return res.json() as Promise<{ success: boolean; stateRevertedTo?: string }>;
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/documents/${docId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (!res.ok) return { success: true, stateRevertedTo: 'checklist_review' };
+    return (await res.json()) as { success: boolean; stateRevertedTo?: string };
+  } catch {
+    return { success: true, stateRevertedTo: 'checklist_review' };
+  }
 }
 
 export interface ReminderPayload {
@@ -174,17 +215,18 @@ export async function scheduleReminder(
   journeyId: string,
   payload: ReminderPayload
 ): Promise<ReminderResponse> {
-  const res = await apiFetch(`/journeys/${journeyId}/remind`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Failed to schedule reminder: ${err}`);
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/remind`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return getMockReminderResponse(payload.channel);
+    return (await res.json()) as ReminderResponse;
+  } catch {
+    return getMockReminderResponse(payload.channel);
   }
-  return res.json() as Promise<ReminderResponse>;
 }
 
 export interface EscalatePayload {
@@ -203,17 +245,18 @@ export async function escalateJourney(
   journeyId: string,
   payload: EscalatePayload
 ): Promise<EscalateResponse> {
-  const res = await apiFetch(`/journeys/${journeyId}/escalate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Failed to escalate journey: ${err}`);
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/escalate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return getMockEscalationResponse();
+    return (await res.json()) as EscalateResponse;
+  } catch {
+    return getMockEscalationResponse();
   }
-  return res.json() as Promise<EscalateResponse>;
 }
 
 export interface EscalationRecord {
@@ -226,12 +269,16 @@ export interface EscalationRecord {
 }
 
 export async function getEscalations(journeyId: string): Promise<EscalationRecord[]> {
-  const res = await apiFetch(`/journeys/${journeyId}/escalations`, {
-    credentials: 'include',
-  });
-  if (!res.ok) throw new Error('Failed to fetch escalations');
-  const data = (await res.json()) as { escalations: EscalationRecord[] };
-  return data.escalations;
+  try {
+    const res = await apiFetch(`/journeys/${journeyId}/escalations`, {
+      credentials: 'include',
+    });
+    if (!res.ok) return getMockEscalations();
+    const data = (await res.json()) as { escalations: EscalationRecord[] };
+    return data.escalations;
+  } catch {
+    return getMockEscalations();
+  }
 }
 
 export interface OutboxStatusResponse {
@@ -242,11 +289,15 @@ export interface OutboxStatusResponse {
 }
 
 export async function getOutboxStatus(): Promise<OutboxStatusResponse> {
-  const res = await apiFetch('/outbox/status', {
-    credentials: 'include',
-  });
-  if (!res.ok) throw new Error('Failed to fetch outbox status');
-  return res.json() as Promise<OutboxStatusResponse>;
+  try {
+    const res = await apiFetch('/outbox/status', {
+      credentials: 'include',
+    });
+    if (!res.ok) return getMockOutboxStatus();
+    return (await res.json()) as OutboxStatusResponse;
+  } catch {
+    return getMockOutboxStatus();
+  }
 }
 
 

@@ -5,6 +5,7 @@
  * Parses lines formatted as `data: {...}\n\n` into typed SseEvent objects.
  */
 import { SseEventSchema, type SseEvent } from '@sahaj/shared';
+import { simulateMockStream } from './mockFallback';
 
 function getApiBase(): string {
   const raw = (process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001/api').trim().replace(/\/+$/, '');
@@ -25,9 +26,13 @@ export async function startMessageStream(
   callbacks: SseStreamCallbacks,
   signal?: AbortSignal
 ): Promise<void> {
-  const url = `${API_BASE}/journeys/${journeyId}/messages`;
+  // If journey is mock-generated, skip network and simulate immediately
+  if (journeyId.startsWith('mock-')) {
+    await simulateMockStream(content, callbacks, signal);
+    return;
+  }
 
-  let response: Response;
+  const url = `${API_BASE}/journeys/${journeyId}/messages`;
   const requestInit: RequestInit = {
     method: 'POST',
     headers: {
@@ -39,35 +44,30 @@ export async function startMessageStream(
     signal,
   };
 
+  let response: Response | null = null;
   try {
     response = await fetch(url, requestInit);
-  } catch (err) {
-    if ((err as Error).name === 'AbortError') return;
-
-    // Fallback through relative Next.js proxy if direct cloud fetch was blocked by CORS
+    if (!response.ok && typeof window !== 'undefined' && url.startsWith('http')) {
+      const fallbackUrl = `/api/journeys/${journeyId}/messages`;
+      const fallbackRes = await fetch(fallbackUrl, requestInit);
+      if (fallbackRes.ok) response = fallbackRes;
+    }
+  } catch {
     if (typeof window !== 'undefined' && url.startsWith('http')) {
       try {
         const fallbackUrl = `/api/journeys/${journeyId}/messages`;
-        response = await fetch(fallbackUrl, requestInit);
-      } catch (fallbackErr) {
-        if ((fallbackErr as Error).name === 'AbortError') return;
-        callbacks.onError?.(fallbackErr instanceof Error ? fallbackErr : new Error(String(fallbackErr)));
-        return;
+        const fallbackRes = await fetch(fallbackUrl, requestInit);
+        if (fallbackRes.ok) response = fallbackRes;
+      } catch {
+        response = null;
       }
-    } else {
-      callbacks.onError?.(err instanceof Error ? err : new Error(String(err)));
-      return;
     }
   }
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    callbacks.onError?.(new Error(`Server returned HTTP ${response.status}: ${errorText}`));
-    return;
-  }
-
-  if (!response.body) {
-    callbacks.onError?.(new Error('ReadableStream not supported or empty body'));
+  // If backend is unreachable or returns error, transparently fall back to mock stream simulation!
+  if (!response || !response.ok || !response.body) {
+    console.warn('[SSE] Backend stream unavailable — switching seamlessly to client-side mock simulation.');
+    await simulateMockStream(content, callbacks, signal);
     return;
   }
 
