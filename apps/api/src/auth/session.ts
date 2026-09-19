@@ -25,8 +25,8 @@ export const sessionPlugin: FastifyPluginAsync = fp(async (app) => {
   app.decorateRequest('isGuest', true);
 
   app.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
-    // Skip session check for healthcheck
-    if (request.url.startsWith('/api/health')) {
+    // Skip session check for healthcheck and preflight OPTIONS
+    if (request.method === 'OPTIONS' || request.url.startsWith('/api/health')) {
       return;
     }
 
@@ -61,12 +61,12 @@ export const sessionPlugin: FastifyPluginAsync = fp(async (app) => {
         }
       }
 
-      // Set signed httpOnly cookie
+      // Set signed httpOnly cookie (supports cross-origin Vercel -> Render calls)
       reply.setCookie(COOKIE_NAME, userId, {
         path: '/',
         httpOnly: true,
         secure: process.env['NODE_ENV'] === 'production',
-        sameSite: 'strict',
+        sameSite: process.env['NODE_ENV'] === 'production' ? 'none' : 'lax',
         signed: true,
         maxAge: 30 * 24 * 60 * 60, // 30 days
       });

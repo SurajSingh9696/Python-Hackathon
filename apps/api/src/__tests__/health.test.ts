@@ -57,4 +57,19 @@ describe('Health & Root Cloud Prober Endpoints', () => {
     expect(body.adapters).toBeDefined();
     expect(body.db).toBeDefined();
   });
+
+  it('handles CORS preflight OPTIONS requests from Vercel origins', async () => {
+    const res = await app.inject({
+      method: 'OPTIONS',
+      url: '/api/journeys',
+      headers: {
+        origin: 'https://web-one-kohl-70.vercel.app',
+        'access-control-request-method': 'POST',
+        'access-control-request-headers': 'content-type',
+      },
+    });
+    expect(res.statusCode).toBe(204);
+    expect(res.headers['access-control-allow-origin']).toBe('https://web-one-kohl-70.vercel.app');
+    expect(res.headers['access-control-allow-credentials']).toBe('true');
+  });
 });
