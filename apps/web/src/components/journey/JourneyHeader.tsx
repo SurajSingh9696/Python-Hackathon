@@ -7,7 +7,15 @@ import { useUIStore } from '../../stores/uiStore';
 import { DemoBadge } from '../common/DemoBadge';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { LanguageSelect } from '../common/LanguageSelect';
-import { SparklesIcon, ClockIcon, SupportIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '../common/Icons';
+import {
+  ChevronLeft,
+  Clock,
+  LifeBuoy,
+  Sparkles,
+  Volume2,
+  VolumeX,
+  Circle,
+} from 'lucide-react';
 import { speechOutput } from '../../lib/voiceEngine';
 
 export function JourneyHeader() {
@@ -17,72 +25,74 @@ export function JourneyHeader() {
   const progressPct = Math.round(progress * 100);
 
   return (
-    <header className="h-14 px-3 sm:px-6 flex items-center justify-between border-b border-[#E2ECE9] dark:border-slate-800 bg-white/95 dark:bg-[#132825]/95 backdrop-blur-md sticky top-0 z-40">
-      {/* Left: Brand / Back */}
+    <header className="h-14 px-3 sm:px-6 flex items-center justify-between border-b border-[var(--rule-line)] bg-[var(--card)] sticky top-0 z-40">
+      {/* Left: Nav Back & Journey Session Status */}
       <div className="flex items-center gap-3">
         <Link
           href="/"
-          className="font-display font-bold text-lg text-[#0F766E] dark:text-[#14B8A6] hover:opacity-80 transition-opacity flex items-center gap-1.5"
-          style={{ fontVariationSettings: "'wdth' 125" }}
+          className="font-mono font-bold text-base text-[var(--ink-navy)] hover:text-[var(--present-green)] transition-colors inline-flex items-center gap-1"
         >
-          <span className="text-[#06B6D4]">←</span> Sahaj
+          <ChevronLeft size={16} />
+          <span>Sahaj</span>
         </Link>
 
-        {/* Live Session Pill */}
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold tracking-wide">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          SESSION ACTIVE
+        {/* Live Ledger Session Dot */}
+        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[6px] border border-[var(--rule-line)] bg-[var(--card)] text-[10px] font-mono text-[var(--ink-navy)]">
+          <Circle size={7} className="fill-current text-[var(--present-green)] animate-pulse" />
+          <span>LIVE</span>
         </span>
 
-        {/* State Badge */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700 text-xs shadow-xs">
-          <span className="capitalize font-semibold text-[#0F766E] dark:text-[#14B8A6]">{domain}</span>
-          <span className="text-[#94A3B8]">·</span>
-          <span className="text-[#475569] dark:text-slate-300 font-medium">{label}</span>
-          <span className="px-1.5 py-0.5 rounded-md bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 font-bold text-[10px]">
+        {/* Domain & Stage Tag */}
+        <div className="hidden md:flex items-center gap-2 px-2.5 py-0.5 rounded-[6px] border border-[var(--rule-line)] bg-[var(--card)] text-xs font-mono">
+          <span className="capitalize font-semibold text-[var(--ink-navy)]">{domain}</span>
+          <span className="text-[var(--rule-line)]">|</span>
+          <span className="text-[var(--muted-foreground)]">{label}</span>
+          <span className="text-[10px] px-1 py-0.2 rounded bg-[var(--muted)] text-[var(--ink-navy)] font-bold">
             {progressPct}%
           </span>
         </div>
       </div>
 
-      {/* Right: Actions */}
+      {/* Right: Ledger Action Controls */}
       <div className="flex items-center gap-2">
         {/* Remind Me */}
         <button
           type="button"
           onClick={() => setReminderOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700 text-[#334155] dark:text-slate-200 hover:border-[#0F766E]/40 hover:bg-teal-50/50 shadow-xs transition-all"
-          title="Schedule an automated journey reminder via WhatsApp or SMS"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium bg-[var(--card)] border border-[var(--rule-line)] text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
+          title="Schedule automated ledger reminder"
         >
-          <ClockIcon className="w-3.5 h-3.5 text-[#0F766E] dark:text-[#22D3EE]" />
-          <span className="hidden lg:inline">Remind Me</span>
+          <Clock size={14} />
+          <span className="hidden lg:inline">Remind</span>
         </button>
 
         {/* Human Specialist Escalation */}
         <button
           type="button"
           onClick={() => setEscalationOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700 text-[#334155] dark:text-slate-200 hover:border-[#F59E0B]/50 hover:bg-amber-50/50 shadow-xs transition-all"
-          title="Connect with a human loan specialist"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium bg-[var(--card)] border border-[var(--rule-line)] text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
+          title="Connect with human specialist"
         >
-          <SupportIcon className="w-3.5 h-3.5 text-[#F59E0B]" />
+          <LifeBuoy size={14} />
           <span className="hidden lg:inline">Specialist</span>
         </button>
 
+        {/* Behind The Scenes / Audit Trace */}
         <button
           type="button"
           onClick={() => openDrawer(activeDrawer === 'behind-the-scenes' ? 'none' : 'behind-the-scenes')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium transition-colors border ${
             activeDrawer === 'behind-the-scenes'
-              ? 'bg-[#0F766E] text-white shadow-sm'
-              : 'bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700 text-[#334155] dark:text-slate-200 hover:border-[#06B6D4]/50 hover:bg-cyan-50/50 shadow-xs'
+              ? 'bg-[var(--ink-navy)] text-[var(--card)] border-[var(--ink-navy)]'
+              : 'bg-[var(--card)] border-[var(--rule-line)] text-[var(--ink-navy)] hover:bg-[var(--muted)]'
           }`}
-          title="See verified sources, retrieval trace, and deterministic calculations"
+          title="View verified sources, deterministic formulas, and retrieval trace"
         >
-          <SparklesIcon className="w-3.5 h-3.5 text-[#06B6D4]" />
-          <span className="hidden md:inline">Behind the scenes</span>
+          <Sparkles size={14} />
+          <span className="hidden md:inline">Trace</span>
         </button>
 
+        {/* Audio Assistant Toggle */}
         <button
           type="button"
           onClick={() => {
@@ -91,19 +101,15 @@ export function JourneyHeader() {
             }
             setVoiceAutoPlay(!isVoiceAutoPlay);
           }}
-          className={`p-2 rounded-xl border text-xs font-medium transition-all ${
+          className={`p-1.5 rounded-[6px] border text-xs transition-colors inline-flex items-center justify-center ${
             isVoiceAutoPlay
-              ? 'bg-[#0F766E]/10 border-[#0F766E]/30 text-[#0F766E] dark:text-[#22D3EE]'
-              : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:text-[#0F766E]'
+              ? 'bg-[var(--present-green)]/15 border-[var(--present-green)] text-[var(--present-green)]'
+              : 'border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)]'
           }`}
-          title={isVoiceAutoPlay ? 'Voice Assistant Narration: ON (Click to Mute)' : 'Voice Assistant Narration: MUTED (Click to Enable)'}
+          title={isVoiceAutoPlay ? 'Voice Narration: Active (Click to mute)' : 'Voice Narration: Muted (Click to enable)'}
           aria-label={isVoiceAutoPlay ? 'Mute Voice Assistant' : 'Enable Voice Assistant'}
         >
-          {isVoiceAutoPlay ? (
-            <SpeakerWaveIcon className="w-4 h-4" />
-          ) : (
-            <SpeakerXMarkIcon className="w-4 h-4" />
-          )}
+          {isVoiceAutoPlay ? <Volume2 size={14} /> : <VolumeX size={14} />}
         </button>
 
         <LanguageSelect />

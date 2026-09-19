@@ -35,13 +35,13 @@ export function IntentChips() {
   }
 
   return (
-    <div className="flex flex-wrap gap-2 px-4 py-2" role="list" aria-label="Suggested quick answers">
+    <div className="flex flex-wrap gap-1.5 px-4 py-2" role="list" aria-label="Suggested quick answers">
       {chips.map((chip, idx) => (
         <button
           key={idx}
           type="button"
           onClick={() => sendMessage(chip.text)}
-          className="text-xs px-3 py-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:border-[var(--color-signal-cyan)] hover:text-[var(--color-signal-cyan)] active:scale-95 transition-all shadow-sm font-medium"
+          className="text-xs font-mono px-2.5 py-1 rounded-[4px] border border-[var(--rule-line)] bg-[var(--card)] text-[var(--ink-navy)] hover:border-[var(--roll-brass)] hover:bg-[var(--muted)] transition-colors"
           role="listitem"
         >
           {chip.label}

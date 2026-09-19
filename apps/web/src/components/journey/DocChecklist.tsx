@@ -5,7 +5,7 @@ import { useJourneyStore } from '../../stores/journeyStore';
 import { listDocuments, deleteDocument, type DocumentItem, type UploadDocumentResponse } from '../../lib/api';
 import { DocumentUploadModal } from '../documents/DocumentUploadModal';
 import { DocumentCard } from '../documents/DocumentCard';
-import { CheckCircleIcon, DocumentTextIcon } from '../common/Icons';
+import { CheckCircle2, FileText, Plus } from 'lucide-react';
 import type { JourneyState } from '@sahaj/shared';
 
 export function DocChecklist() {
@@ -62,16 +62,18 @@ export function DocChecklist() {
   ];
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-[var(--shadow-card)]">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-          Required Documents ({displayItems.length})
-        </h3>
-        <span className="text-[11px] text-[var(--color-leaf)] font-medium">Digital Verification</span>
+    <div className="flex flex-col gap-3 p-4 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)]">
+      <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-2">
+        <span className="text-label">
+          Verification Checklist ({displayItems.length})
+        </span>
+        <span className="text-[11px] font-mono text-[var(--present-green)]">
+          REGULATORY COMPLIANCE
+        </span>
       </div>
 
-      {/* Checklist status items */}
-      <div className="flex flex-col gap-2">
+      {/* Checklist items */}
+      <div className="flex flex-col gap-1.5">
         {displayItems.map((item) => {
           const mappedType = docTypeMapping[item.id] ?? item.id;
           const uploaded = uploadedDocs.find((d) => d.docType === mappedType);
@@ -80,25 +82,27 @@ export function DocChecklist() {
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] text-xs"
+              className="flex items-center justify-between p-2 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] text-xs"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <DocumentTextIcon className="w-4 h-4 text-[var(--color-slate)] shrink-0" />
-                <span className="font-medium text-[var(--text-primary)] truncate">{item.label}</span>
+                <FileText size={14} className="text-[var(--muted-foreground)] shrink-0" />
+                <span className="font-medium text-[var(--ink-navy)] truncate">{item.label}</span>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 {isVerified ? (
-                  <span className="flex items-center gap-1 text-[var(--color-leaf)] font-medium text-[11px]">
-                    <CheckCircleIcon className="w-3.5 h-3.5" /> Verified
+                  <span className="inline-flex items-center gap-1 text-[var(--present-green)] font-mono text-[11px]">
+                    <CheckCircle2 size={13} />
+                    <span>VERIFIED</span>
                   </span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setActiveUploadDoc({ type: mappedType, label: item.label })}
-                    className="px-2.5 py-1 rounded-lg bg-[var(--color-signal-cyan)]/10 text-[var(--color-signal-cyan)] hover:bg-[var(--color-signal-cyan)]/20 font-medium transition-colors"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] border border-[var(--rule-line)] text-[var(--ink-navy)] hover:bg-[var(--muted)] font-mono text-[11px] transition-colors"
                   >
-                    Upload
+                    <Plus size={12} />
+                    <span>Upload</span>
                   </button>
                 )}
               </div>
@@ -109,11 +113,11 @@ export function DocChecklist() {
 
       {/* Uploaded Documents List */}
       {uploadedDocs.length > 0 && (
-        <div className="flex flex-col gap-2 mt-2 pt-2 border-t border-[var(--border-default)]">
-          <span className="text-[10px] uppercase font-semibold text-[var(--text-secondary)] tracking-wider">
-            Uploaded Files ({uploadedDocs.length})
+        <div className="flex flex-col gap-2 mt-2 pt-2 border-t border-[var(--rule-line)]">
+          <span className="text-label">
+            Audited Files ({uploadedDocs.length})
           </span>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {uploadedDocs.map((doc) => (
               <DocumentCard key={doc._id} document={doc} onDelete={handleDelete} />
             ))}

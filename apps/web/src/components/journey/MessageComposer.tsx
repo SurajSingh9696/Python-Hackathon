@@ -5,7 +5,7 @@ import { useJourneyStore } from '../../stores/journeyStore';
 import { useUIStore } from '../../stores/uiStore';
 import { t } from '../../lib/i18n';
 import { speechInput } from '../../lib/voiceEngine';
-import { MicrophoneIcon } from '../common/Icons';
+import { Mic, ArrowRight } from 'lucide-react';
 
 export function MessageComposer() {
   const [text, setText] = useState('');
@@ -67,20 +67,20 @@ export function MessageComposer() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-3 sm:p-4 bg-[var(--bg-surface)]/95 backdrop-blur-md border-t border-[var(--border-default)] sticky bottom-0 z-30 flex flex-col gap-1.5"
+      className="p-3 sm:p-4 bg-[var(--card)] border-t border-[var(--rule-line)] sticky bottom-0 z-30 flex flex-col gap-1.5"
       aria-label="Send message"
     >
       {/* Listening / Feedback Banner */}
       {isListening && (
-        <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-medium animate-pulse max-w-4xl mx-auto w-full">
+        <div className="flex items-center justify-between px-3 py-1.5 rounded-[4px] bg-[var(--absent-red)]/10 border border-[var(--absent-red)]/30 text-[var(--absent-red)] text-xs font-mono animate-pulse max-w-4xl mx-auto w-full">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-            <span>Listening... Bolie, hum sun rahe hain</span>
+            <span className="w-2 h-2 rounded-full bg-[var(--absent-red)] animate-ping" />
+            <span>Listening... Bolie, hum record kar rahe hain</span>
           </div>
           <button
             type="button"
             onClick={handleToggleVoice}
-            className="text-[11px] underline font-semibold hover:opacity-80"
+            className="text-[11px] font-mono underline font-semibold hover:opacity-80"
           >
             Done
           </button>
@@ -88,26 +88,27 @@ export function MessageComposer() {
       )}
 
       {voiceError && (
-        <div className="px-3 py-1 text-center text-xs text-[var(--color-rust)] bg-[var(--color-rust)]/10 rounded-lg max-w-4xl mx-auto w-full">
+        <div className="px-3 py-1 text-center text-xs font-mono text-[var(--absent-red)] bg-[var(--absent-red)]/10 border border-[var(--absent-red)]/20 rounded-[4px] max-w-4xl mx-auto w-full">
           {voiceError}
         </div>
       )}
 
-      <div className="flex items-center gap-3 max-w-4xl mx-auto w-full bg-white dark:bg-[#1E293B] border border-[#DDE8E6] dark:border-slate-700 rounded-2xl p-2 px-4 shadow-sm hover:shadow-md focus-within:border-[#0F766E] focus-within:ring-4 focus-within:ring-[#0F766E]/10 transition-all duration-200">
+      {/* The Ledger Input Container: 1px rule line, 6px radius, no shadows */}
+      <div className="flex items-center gap-2.5 max-w-4xl mx-auto w-full bg-[var(--card)] border border-[var(--rule-line)] rounded-[6px] p-2 px-3 focus-within:outline focus-within:outline-2 focus-within:outline-[var(--roll-brass)] transition-colors">
         {/* Voice Input Microphone Button */}
         <button
           type="button"
           onClick={handleToggleVoice}
           disabled={isStreaming}
-          className={`p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 ${
+          className={`p-2 rounded-[4px] border transition-colors flex items-center justify-center shrink-0 ${
             isListening
-              ? 'bg-red-500 text-white shadow-md animate-pulse scale-105'
-              : 'text-[var(--text-secondary)] hover:text-[#0F766E] hover:bg-[#0F766E]/10 dark:hover:text-[#22D3EE]'
+              ? 'bg-[var(--absent-red)] text-white border-[var(--absent-red)] animate-pulse'
+              : 'border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)]'
           }`}
           title={isListening ? 'Stop listening' : 'Speak to type (Hindi / English / Hinglish)'}
           aria-label={isListening ? 'Stop listening' : 'Voice typing'}
         >
-          <MicrophoneIcon className="w-4 h-4" />
+          <Mic size={15} />
         </button>
 
         {/* Text input */}
@@ -122,19 +123,20 @@ export function MessageComposer() {
               : t('common', 'composerPlaceholder', language)
           }
           disabled={isStreaming}
-          className="flex-1 bg-transparent border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-none shadow-none ring-0 text-[#17201F] dark:text-[#F8FAF9] placeholder:text-[#94A3B8] text-sm sm:text-base font-normal min-w-0 py-1"
+          className="flex-1 bg-transparent border-none outline-none text-[var(--ink-navy)] placeholder:text-[var(--muted-foreground)] text-sm font-sans min-w-0 py-1"
           style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           aria-label="Your response"
         />
 
-        {/* Send Button in Sahaj Deep Teal */}
+        {/* Send Button: Icon on left, gap-1.5, size 15 */}
         <button
           type="submit"
           disabled={!text.trim() || isStreaming}
-          className="shrink-0 bg-[#0F766E] hover:bg-[#0D655E] text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl active:scale-95 transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm hover:shadow"
+          className="shrink-0 bg-[var(--present-green)] hover:bg-[var(--present-green)]/90 text-white font-medium text-xs px-3.5 py-1.5 rounded-[4px] inline-flex items-center gap-1.5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Send message"
         >
-          {t('common', 'send', language)}
+          <ArrowRight size={14} />
+          <span>{t('common', 'send', language)}</span>
         </button>
       </div>
     </form>

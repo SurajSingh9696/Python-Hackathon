@@ -3,7 +3,7 @@
 import React from 'react';
 import { useUIStore } from '../../stores/uiStore';
 import { DICTIONARY } from '../../lib/i18n';
-import { XMarkIcon, InfoIcon } from '../common/Icons';
+import { X, Info } from 'lucide-react';
 
 export function TermExplainer() {
   const { activeTerm, explainTerm, language } = useUIStore();
@@ -22,48 +22,48 @@ export function TermExplainer() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-up"
       role="dialog"
       aria-modal="true"
       aria-labelledby="term-title"
     >
-      <div className="w-full max-w-md p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-2xl flex flex-col gap-4 animate-scaleUp">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[var(--color-signal-cyan)]">
-            <InfoIcon className="w-5 h-5" />
-            <h3 id="term-title" className="font-semibold text-base text-[var(--text-primary)]">
+      <div className="w-full max-w-md p-5 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] flex flex-col gap-3 font-sans">
+        <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-2">
+          <div className="flex items-center gap-1.5 text-label">
+            <Info size={14} className="text-[var(--roll-brass)]" />
+            <h3 id="term-title" className="font-semibold text-xs text-[var(--ink-navy)]">
               {title}
             </h3>
           </div>
           <button
             type="button"
             onClick={() => explainTerm(null)}
-            className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-default)] transition-colors"
+            className="p-1 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
             aria-label="Close"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <X size={14} />
           </button>
         </div>
 
-        <p className="text-sm text-[var(--text-primary)] leading-relaxed">{explanation}</p>
+        <p className="text-xs text-[var(--ink-navy)] leading-relaxed">{explanation}</p>
 
-        <div className="p-3 rounded-2xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] text-xs text-[var(--text-secondary)] flex flex-col gap-1">
-          <span className="font-semibold text-[var(--text-primary)]">Key Takeaway</span>
-          <span>
+        <div className="p-3 rounded-[4px] bg-[var(--ledger-paper)] border border-[var(--rule-line)] text-xs font-mono text-[var(--muted-foreground)] flex flex-col gap-1">
+          <span className="text-label text-[10px]">Policy Summary</span>
+          <span className="text-[11px] text-[var(--ink-navy)]">
             {key === 'moratorium'
-              ? 'You do not have to worry about principal EMI while studying. Repayment starts only after college.'
+              ? 'Zero principal EMI is charged during the educational period. Repayment commences after completion.'
               : key === 'foir'
-                ? 'Lenders prefer that less than 50% of your salary goes into total EMIs for safe repayment.'
-                : 'Your interest cost decreases automatically each month as you pay down your loan.'}
+                ? 'Under standard RBI prudential guidelines, lenders require total obligations to remain under 50% of monthly income.'
+                : 'Interest accrues strictly on remaining unpaid principal balance, lowering monthly charges as principal is amortized.'}
           </span>
         </div>
 
         <button
           type="button"
           onClick={() => explainTerm(null)}
-          className="w-full py-2.5 rounded-xl bg-[var(--color-signal-cyan)] text-white font-semibold text-sm hover:bg-[#009fd4] active:scale-95 transition-all"
+          className="w-full py-1.5 rounded-[4px] border border-[var(--rule-line)] bg-[var(--muted)] text-[var(--ink-navy)] font-mono text-xs hover:bg-[var(--rule-line)]/50 transition-colors"
         >
-          Got it, thanks!
+          Dismiss
         </button>
       </div>
     </div>

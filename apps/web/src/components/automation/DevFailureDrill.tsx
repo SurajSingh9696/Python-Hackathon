@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useJourneyStore } from '../../stores/journeyStore';
 import { getOutboxStatus, type OutboxStatusResponse } from '../../lib/api';
-import { AlertTriangleIcon, XMarkIcon, SparklesIcon } from '../common/Icons';
+import { AlertTriangle, X } from 'lucide-react';
 
 export function DevFailureDrill() {
   const searchParams = useSearchParams();
@@ -56,91 +56,88 @@ export function DevFailureDrill() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-40">
+    <div className="fixed bottom-4 left-4 z-40 font-mono">
       {!isExpanded ? (
         <button
           type="button"
           onClick={() => setIsExpanded(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--color-rust)] text-white shadow-xl text-xs font-semibold hover:opacity-90 transition-opacity border border-white/20"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-[var(--card)] text-[var(--absent-red)] border border-[var(--absent-red)]/40 hover:bg-[var(--absent-red)]/10 text-xs transition-colors"
           title="Dev Failure & Chaos Drill Panel"
         >
-          <AlertTriangleIcon className="w-3.5 h-3.5" />
+          <AlertTriangle size={13} />
           <span>Chaos Drill (?dev=1)</span>
         </button>
       ) : (
-        <div className="w-80 bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-scaleUp">
+        <div className="w-80 bg-[var(--card)] border border-[var(--rule-line)] rounded-[6px] overflow-hidden flex flex-col animate-fade-up">
           {/* Header */}
-          <div className="p-3 bg-[var(--color-rust)] text-white flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertTriangleIcon className="w-4 h-4" />
-              <span className="text-xs font-bold">Failure Drill &amp; Chaos Panel</span>
-            </div>
+          <div className="p-2.5 bg-[var(--ledger-paper)] border-b border-[var(--rule-line)] flex items-center justify-between">
+            <span className="text-xs font-semibold text-[var(--ink-navy)]">Chaos &amp; Resilience Test</span>
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="p-1 rounded text-white/80 hover:text-white"
+              className="p-1 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)]"
             >
-              <XMarkIcon className="w-4 h-4" />
+              <X size={13} />
             </button>
           </div>
 
           {/* Drill Options */}
-          <div className="p-3 flex flex-col gap-2">
-            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-              Simulate Edge Cases
+          <div className="p-3 flex flex-col gap-2 text-xs">
+            <span className="text-label">
+              Injected Vectors
             </span>
 
             <button
               type="button"
               onClick={handleTestInjection}
-              className="text-left text-xs p-2 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border-default)] border border-[var(--border-default)] transition-colors"
+              className="text-left p-2 rounded-[4px] bg-[var(--card)] hover:bg-[var(--muted)] border border-[var(--rule-line)] transition-colors"
             >
-              <div className="font-semibold text-[var(--color-rust)]">Test Prompt Injection</div>
-              <div className="text-[10px] text-[var(--text-secondary)]">Attempt override jailbreak &amp; verify neutralization</div>
+              <div className="font-semibold text-[var(--absent-red)]">Test Prompt Injection</div>
+              <div className="text-[10px] text-[var(--muted-foreground)]">System override jailbreak test</div>
             </button>
 
             <button
               type="button"
               onClick={handleTestHighRisk}
-              className="text-left text-xs p-2 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border-default)] border border-[var(--border-default)] transition-colors"
+              className="text-left p-2 rounded-[4px] bg-[var(--card)] hover:bg-[var(--muted)] border border-[var(--rule-line)] transition-colors"
             >
-              <div className="font-semibold text-[var(--color-terracotta)]">High-Risk Affordability (Red FOIR)</div>
-              <div className="text-[10px] text-[var(--text-secondary)]">₹12k income vs ₹50L loan to trigger caution band</div>
+              <div className="font-semibold text-[var(--roll-brass)]">High-Risk FOIR Test</div>
+              <div className="text-[10px] text-[var(--muted-foreground)]">₹12k income vs ₹50L loan (Red band)</div>
             </button>
 
             <button
               type="button"
               onClick={handleTestHinglishComplex}
-              className="text-left text-xs p-2 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border-default)] border border-[var(--border-default)] transition-colors"
+              className="text-left p-2 rounded-[4px] bg-[var(--card)] hover:bg-[var(--muted)] border border-[var(--rule-line)] transition-colors"
             >
-              <div className="font-semibold text-[var(--color-signal-cyan)]">Complex Hinglish Math Flow</div>
-              <div className="text-[10px] text-[var(--text-secondary)]">Abroad MS ₹30L loan with ₹75k income parsing</div>
+              <div className="font-semibold text-[var(--present-green)]">Hinglish Compound Token Flow</div>
+              <div className="text-[10px] text-[var(--muted-foreground)]">₹30L MS loan with ₹75k salary parsing</div>
             </button>
 
             {/* Outbox Status */}
-            <div className="mt-2 pt-2 border-t border-[var(--border-default)]">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
-                <span>Live Outbox Queue</span>
+            <div className="mt-2 pt-2 border-t border-[var(--rule-line)]">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--muted-foreground)] mb-1">
+                <span>Transactional Outbox</span>
                 <button
                   type="button"
                   onClick={() => void fetchStats()}
-                  className="text-[var(--color-signal-cyan)] hover:underline"
+                  className="text-[var(--roll-brass)] hover:underline"
                 >
                   Refresh
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-1 text-center font-mono text-[10px]">
-                <div className="p-1 rounded bg-[var(--bg-surface-alt)] border border-[var(--border-default)]">
-                  <div className="text-[var(--color-leaf)] font-bold">{outboxStats?.completed ?? 0}</div>
-                  <div className="text-[var(--text-secondary)]">Delivered</div>
+                <div className="p-1 rounded-[4px] bg-[var(--card)] border border-[var(--rule-line)]">
+                  <div className="text-[var(--present-green)] font-bold">{outboxStats?.completed ?? 0}</div>
+                  <div className="text-[var(--muted-foreground)] text-[9px]">SENT</div>
                 </div>
-                <div className="p-1 rounded bg-[var(--bg-surface-alt)] border border-[var(--border-default)]">
-                  <div className="text-[var(--color-signal-cyan)] font-bold">{outboxStats?.pending ?? 0}</div>
-                  <div className="text-[var(--text-secondary)]">Pending</div>
+                <div className="p-1 rounded-[4px] bg-[var(--card)] border border-[var(--rule-line)]">
+                  <div className="text-[var(--roll-brass)] font-bold">{outboxStats?.pending ?? 0}</div>
+                  <div className="text-[var(--muted-foreground)] text-[9px]">PENDING</div>
                 </div>
-                <div className="p-1 rounded bg-[var(--bg-surface-alt)] border border-[var(--border-default)]">
-                  <div className="text-[var(--color-rust)] font-bold">{outboxStats?.failed ?? 0}</div>
-                  <div className="text-[var(--text-secondary)]">Failed</div>
+                <div className="p-1 rounded-[4px] bg-[var(--card)] border border-[var(--rule-line)]">
+                  <div className="text-[var(--absent-red)] font-bold">{outboxStats?.failed ?? 0}</div>
+                  <div className="text-[var(--muted-foreground)] text-[9px]">FAILED</div>
                 </div>
               </div>
             </div>

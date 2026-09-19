@@ -35,7 +35,6 @@ export function KnowledgeTraceGraph({
 }: KnowledgeTraceGraphProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-  // If trace is empty or has very few nodes, provide a representative graph structure
   const activeNodes = useMemo(() => {
     if (nodes && nodes.length > 0) return nodes;
     return [
@@ -59,10 +58,9 @@ export function KnowledgeTraceGraph({
     ];
   }, [edges]);
 
-  // Layout calculations (3 columns: Query -> Sources -> Claims)
   const positionedNodes = useMemo(() => {
     const width = 420;
-    const height = 240;
+    const height = 220;
 
     const columnMap: Record<string, PositionedNode[]> = {
       query: [],
@@ -73,15 +71,14 @@ export function KnowledgeTraceGraph({
     activeNodes.forEach((node) => {
       const type = node.type.toLowerCase();
       if (type.includes('query') || type === 'root') {
-        columnMap.query!.push({ ...node, x: 0, y: 0, color: 'var(--color-signal-cyan)' });
+        columnMap.query!.push({ ...node, x: 0, y: 0, color: 'var(--ink-navy)' });
       } else if (type.includes('claim') || type.includes('output') || type.includes('metric')) {
-        columnMap.claim!.push({ ...node, x: 0, y: 0, color: 'var(--color-leaf)' });
+        columnMap.claim!.push({ ...node, x: 0, y: 0, color: 'var(--present-green)' });
       } else {
-        columnMap.source!.push({ ...node, x: 0, y: 0, color: 'var(--color-saffron)' });
+        columnMap.source!.push({ ...node, x: 0, y: 0, color: 'var(--roll-brass)' });
       }
     });
 
-    // Fallback if all fell into one category
     if (columnMap.query!.length === 0) {
       columnMap.query!.push({
         id: 'query-root',
@@ -90,27 +87,24 @@ export function KnowledgeTraceGraph({
         retrieved: true,
         x: 0,
         y: 0,
-        color: 'var(--color-signal-cyan)',
+        color: 'var(--ink-navy)',
       });
     }
 
     const posMap = new Map<string, PositionedNode>();
 
-    // Col 0: Query (X: 45)
     columnMap.query!.forEach((n, idx) => {
       const spacing = height / (columnMap.query!.length + 1);
       const y = spacing * (idx + 1);
       posMap.set(n.id, { ...n, x: 50, y });
     });
 
-    // Col 1: Sources (X: 210)
     columnMap.source!.forEach((n, idx) => {
       const spacing = height / (columnMap.source!.length + 1);
       const y = spacing * (idx + 1);
       posMap.set(n.id, { ...n, x: 210, y });
     });
 
-    // Col 2: Claims (X: 370)
     columnMap.claim!.forEach((n, idx) => {
       const spacing = height / (columnMap.claim!.length + 1);
       const y = spacing * (idx + 1);
@@ -123,42 +117,26 @@ export function KnowledgeTraceGraph({
   const selectedNode = selectedNodeId ? positionedNodes.get(selectedNodeId) : null;
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-2xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-signal-cyan)] animate-ping" />
-          <span className="text-xs font-bold text-[var(--text-primary)]">
-            Knowledge Retrieval Graph
-          </span>
-        </div>
-        <div className="flex items-center gap-2 text-[11px]">
-          <span className="px-2 py-0.5 rounded-full bg-[var(--color-signal-cyan)]/10 text-[var(--color-signal-cyan)] font-semibold border border-[var(--color-signal-cyan)]/20">
+    <div className="flex flex-col gap-2.5 p-3 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] font-mono">
+      <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-1.5">
+        <span className="text-label">
+          Knowledge Graph Registry
+        </span>
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="px-1.5 py-0.5 rounded-[4px] border border-[var(--rule-line)] bg-[var(--ledger-paper)] text-[var(--ink-navy)]">
             {adapterMode}
           </span>
-          <span className="font-mono text-[var(--color-leaf)] font-bold">{retrievalMs}ms</span>
+          <span className="tabular-nums text-[var(--present-green)] font-bold">{retrievalMs}ms</span>
         </div>
       </div>
 
       {/* SVG Canvas */}
-      <div className="relative w-full overflow-hidden rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)]">
+      <div className="relative w-full overflow-hidden rounded-[4px] bg-[var(--ledger-paper)] border border-[var(--rule-line)]">
         <svg
-          viewBox="0 0 420 240"
+          viewBox="0 0 420 220"
           className="w-full h-auto select-none"
-          style={{ minHeight: '190px' }}
+          style={{ minHeight: '180px' }}
         >
-          <defs>
-            <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="var(--color-signal-cyan)" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="var(--color-saffron)" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="var(--color-leaf)" stopOpacity="0.8" />
-            </linearGradient>
-
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
-
           {/* Render directed bezier edges */}
           {activeEdges.map((edge, idx) => {
             const start = positionedNodes.get(edge.from);
@@ -170,21 +148,18 @@ export function KnowledgeTraceGraph({
 
             return (
               <g key={`edge-${idx}`}>
-                {/* Background path line */}
                 <path
                   d={pathData}
                   fill="none"
-                  stroke="var(--border-strong)"
+                  stroke="var(--rule-line)"
                   strokeWidth="1.5"
-                  opacity="0.5"
                 />
-                {/* Animated pulsing trace line */}
                 <path
                   d={pathData}
                   fill="none"
-                  stroke="url(#edgeGrad)"
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
+                  stroke="var(--roll-brass)"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 3"
                   className="animate-pulse"
                 />
               </g>
@@ -198,35 +173,27 @@ export function KnowledgeTraceGraph({
               <g
                 key={node.id}
                 onClick={() => setSelectedNodeId(isSelected ? null : node.id)}
-                className="cursor-pointer transition-transform hover:scale-110"
-                style={{ transformOrigin: `${node.x}px ${node.y}px` }}
+                className="cursor-pointer"
               >
-                {/* Glow ring */}
                 <circle
                   cx={node.x}
                   cy={node.y}
-                  r={isSelected ? 18 : 14}
-                  fill={node.color}
-                  fillOpacity={isSelected ? 0.35 : 0.15}
-                  stroke={node.color}
-                  strokeWidth={isSelected ? 2 : 1}
-                  filter={isSelected ? 'url(#glow)' : undefined}
+                  r={isSelected ? 14 : 11}
+                  fill="var(--card)"
+                  stroke={isSelected ? 'var(--roll-brass)' : node.color}
+                  strokeWidth={isSelected ? 2 : 1.5}
                 />
                 <circle
                   cx={node.x}
                   cy={node.y}
-                  r={isSelected ? 8 : 6}
+                  r={isSelected ? 6 : 4}
                   fill={node.color}
                 />
-                {/* Text Label */}
                 <text
                   x={node.x}
-                  y={node.y + 20}
+                  y={node.y + 18}
                   textAnchor="middle"
-                  className="text-[9px] fill-[var(--text-primary)] font-medium pointer-events-none"
-                  style={{
-                    textShadow: '0px 1px 3px rgba(0,0,0,0.6)',
-                  }}
+                  className="text-[9px] fill-[var(--ink-navy)] font-mono pointer-events-none"
                 >
                   {node.label.length > 15 ? `${node.label.slice(0, 13)}…` : node.label}
                 </text>
@@ -238,27 +205,27 @@ export function KnowledgeTraceGraph({
 
       {/* Selected Node Details or Legend */}
       {selectedNode ? (
-        <div className="p-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-xs flex flex-col gap-1 animate-fadeIn">
+        <div className="p-2 rounded-[4px] bg-[var(--ledger-paper)] border border-[var(--rule-line)] text-xs flex flex-col gap-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-[var(--text-primary)]">{selectedNode.label}</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full capitalize font-semibold bg-[var(--border-default)] text-[var(--text-secondary)]">
+            <span className="font-semibold text-[var(--ink-navy)]">{selectedNode.label}</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded uppercase border border-[var(--rule-line)] text-[var(--muted-foreground)]">
               {selectedNode.type}
             </span>
           </div>
-          <div className="text-[11px] text-[var(--text-secondary)]">
-            Status: <span className="text-[var(--color-leaf)] font-medium">Retrieved &amp; Verified</span> · Node ID: <code className="font-mono text-[10px]">{selectedNode.id}</code>
+          <div className="text-[10px] text-[var(--muted-foreground)]">
+            Status: <span className="text-[var(--present-green)]">Verified</span> · ID: <code>{selectedNode.id}</code>
           </div>
         </div>
       ) : (
-        <div className="flex items-center justify-between text-[10px] text-[var(--text-secondary)] px-1">
+        <div className="flex items-center justify-between text-[10px] text-[var(--muted-foreground)] px-1">
           <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-signal-cyan)]" /> Query
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--ink-navy)]" /> Query
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-saffron)]" /> Knowledge Source
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--roll-brass)]" /> Source
           </div>
           <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-leaf)]" /> Verified Claim
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--present-green)]" /> Verified Claim
           </div>
         </div>
       )}

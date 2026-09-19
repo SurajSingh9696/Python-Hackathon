@@ -9,36 +9,51 @@ const config: Config = {
   darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
-      // ── Design token colours (Warm Fintech Palette) ──────────
+      // ── AttendX Design System: "The Ledger" Palette ──────────
       colors: {
-        'sahaj-teal':       '#0F766E',  // Primary / Brand Deep Teal
-        'sahaj-teal-light': '#14B8A6',  // Primary Bright Teal
-        'sahaj-cyan':       '#22D3EE',  // Clarity / AI Accent
-        'sahaj-orange':     '#F59E0B',  // Journey / Energy Warm Orange
-        'sahaj-amber':      '#FBBF24',  // Amber Highlight
-        'sahaj-offwhite':   '#F8FAF9',  // Warm Off-White
-        'sahaj-charcoal':   '#17201F',  // Deep Charcoal text
-        'sahaj-slate':      '#64748B',  // Slate secondary
-        'sahaj-border':     '#DDE8E6',  // Soft Teal-Gray border
-        'sahaj-emerald':    '#10B981',  // Success
-        'sahaj-red':        '#EF4444',  // Error
+        'ledger-paper':     '#EDF2E9',  // Primary background: soft greenish off-white
+        'card':             '#F5F8F2',  // Cards, popovers, elevated containers
+        'popover':          '#F5F8F2',
+        'ink-navy':         '#1E2A33',  // Primary text: deep slate navy
+        'rule-line':        '#B9CBB0',  // Muted sage green: ALL borders & dividers
+        'border':           '#B9CBB0',
+        'muted':            '#D8E4D3',  // Subtle hover states, secondary background
+        'secondary':        '#D8E4D3',
+        'muted-foreground': '#5A7260',  // Secondary text, labels, subtext
+        'present-green':    '#2F6B4F',  // Attended / Safe / Success
+        'absent-red':       '#B33A2E',  // Missed / Risk / Destructive
+        'roll-brass':       '#A9822F',  // Accent: brass rings, tags, highlights
+        'paper-sand':       '#EDF2E9',
 
-        // Aliases for compatibility with existing classes:
-        'ink-indigo':     '#0F766E',  // Deep Teal
-        'deep-night':     '#0C1A18',  // Deep forest dark teal
-        'signal-cyan':    '#22D3EE',  // Bright Cyan
-        'saffron-thread': '#F59E0B',  // Warm Orange
-        mist:             '#F8FAF9',  // Warm off-white
-        slate:            '#64748B',  // Slate
-        leaf:             '#10B981',  // Emerald
-        rose:             '#EF4444',  // Red
+        // Backward compatibility mappings with Ledger palette
+        'sahaj-teal':       '#2F6B4F',
+        'sahaj-teal-light': '#3E8262',
+        'sahaj-cyan':       '#2F6B4F',
+        'sahaj-orange':     '#A9822F',
+        'sahaj-amber':      '#A9822F',
+        'sahaj-offwhite':   '#F5F8F2',
+        'sahaj-charcoal':   '#1E2A33',
+        'sahaj-slate':      '#5A7260',
+        'sahaj-border':     '#B9CBB0',
+        'sahaj-emerald':    '#2F6B4F',
+        'sahaj-red':        '#B33A2E',
+
+        'ink-indigo':       '#1E2A33',
+        'deep-night':       '#121A18',
+        'signal-cyan':      '#2F6B4F',
+        'saffron-thread':   '#A9822F',
+        'mist':             '#EDF2E9',
+        'slate':            '#5A7260',
+        'leaf':             '#2F6B4F',
+        'rose':             '#B33A2E',
       },
 
-      // ── Typography ───────────────────────────────────────────
+      // ── Typography: IBM Plex Sans & IBM Plex Mono ────────────
       fontFamily: {
-        display: ['var(--font-anek-latin)', 'var(--font-anek-devanagari)', 'sans-serif'],
-        body: ['var(--font-instrument-sans)', 'var(--font-noto-devanagari)', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['var(--font-ibm-plex-sans)', 'var(--font-noto-devanagari)', 'sans-serif'],
+        display: ['var(--font-ibm-plex-mono)', 'ui-monospace', 'monospace'],
+        body: ['var(--font-ibm-plex-sans)', 'var(--font-noto-devanagari)', 'sans-serif'],
+        mono: ['var(--font-ibm-plex-mono)', 'ui-monospace', 'monospace'],
       },
 
       // ── Spacing / layout ─────────────────────────────────────
@@ -47,24 +62,27 @@ const config: Config = {
         'journey-panel': '380px',
       },
 
-      // ── Animation ────────────────────────────────────
+      // ── Animation: Subtle 12px entrance ──────────────────────
       keyframes: {
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
         'thread-idle': {
-          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-          '33%':       { transform: 'translateY(-6px) rotate(0.5deg)' },
-          '66%':       { transform: 'translateY(4px) rotate(-0.5deg)' },
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%':      { transform: 'translateY(-3px)' },
         },
         'pulse-node': {
           '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%':      { opacity: '0.7', transform: 'scale(1.15)' },
+          '50%':      { opacity: '0.8', transform: 'scale(1.08)' },
         },
         'draw-in': {
           from: { strokeDashoffset: '1' },
           to:   { strokeDashoffset: '0' },
-        },
-        'fade-up': {
-          from: { opacity: '0', transform: 'translateY(8px)' },
-          to:   { opacity: '1', transform: 'translateY(0)' },
         },
         shimmer: {
           '0%':   { backgroundPosition: '-200% 0' },
@@ -72,38 +90,44 @@ const config: Config = {
         },
       },
       animation: {
+        fadeUp: 'fadeUp 0.35s ease both',
+        'fade-up': 'fadeUp 0.35s ease both',
         'thread-idle': 'thread-idle 6s ease-in-out infinite',
         'pulse-node':  'pulse-node 2s ease-in-out infinite',
         'draw-in':     'draw-in 0.6s ease-out forwards',
-        'fade-up':     'fade-up 0.4s ease-out forwards',
         shimmer:       'shimmer 1.5s linear infinite',
       },
 
-      // ── Gradients (Warm Fintech & Thread) ─────────────────────
+      // ── Gradients ─────────────────────────────────────────────
       backgroundImage: {
         'thread-gradient':
-          'linear-gradient(135deg, #F59E0B 0%, #22D3EE 100%)',
+          'linear-gradient(135deg, #A9822F 0%, #2F6B4F 100%)',
         'sahaj-signature':
-          'linear-gradient(135deg, #F59E0B 0%, #22D3EE 100%)',
+          'linear-gradient(135deg, #A9822F 0%, #2F6B4F 100%)',
         'teal-gradient':
-          'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)',
-        'shimmer-gradient':
-          'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
+          'linear-gradient(135deg, #2F6B4F 0%, #3E8262 100%)',
       },
 
-      // ── Border radius ────────────────────────────────────────
+      // ── Border radius: 0.375rem / 6px sharp but friendly ─────
       borderRadius: {
-        card: '0.875rem', // 14px
+        DEFAULT: '0.375rem',
+        sm: '0.25rem',
+        md: '0.375rem',
+        lg: '0.375rem',
+        xl: '0.375rem',
+        '2xl': '0.375rem',
+        card: '0.375rem', // 6px
         chip: '999px',
       },
 
-      // ── Box shadow ───────────────────────────────────────────
+      // ── Box shadow: AVOIDED ENTIRELY in Ledger ────────────────
       boxShadow: {
-        card:  '0 2px 12px rgba(15, 118, 110, 0.06), 0 1px 3px rgba(15, 118, 110, 0.04)',
-        'card-hover': '0 6px 24px rgba(15, 118, 110, 0.12), 0 2px 6px rgba(15, 118, 110, 0.08)',
-        'glow-cyan':  '0 0 16px rgba(34, 211, 238, 0.35)',
-        'glow-orange': '0 0 16px rgba(245, 158, 11, 0.35)',
-        'glow-teal':  '0 0 16px rgba(15, 118, 110, 0.35)',
+        none: 'none',
+        card: 'none',
+        'card-hover': 'none',
+        'glow-cyan': 'none',
+        'glow-orange': 'none',
+        'glow-teal': 'none',
       },
     },
   },

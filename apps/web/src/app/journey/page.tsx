@@ -38,20 +38,20 @@ function JourneyContent() {
   const hasFinancialData = products.length > 0 || affordability !== null || checklist.length > 0;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[var(--bg-page)] text-[var(--text-primary)]">
+    <div className="min-h-[100dvh] flex flex-col bg-[var(--ledger-paper)] text-[var(--ink-navy)] font-sans">
       {/* Header */}
       <JourneyHeader />
 
-      {/* Main Layout */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden max-w-7xl w-full mx-auto">
+      {/* Main Layout: The Ledger Two-Column Record System */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden max-w-7xl w-full mx-auto animate-fade-up">
         {/* Left Column: Conversation Stream & Input */}
         <section
-          className="flex-1 flex flex-col min-w-0 h-[calc(100dvh-3.5rem)] md:border-r border-[var(--border-default)]"
+          className="flex-1 flex flex-col min-w-0 h-[calc(100dvh-3.5rem)] md:border-r border-[var(--rule-line)] bg-[var(--ledger-paper)]"
           aria-label="Journey Conversation"
         >
-          {/* Thread Progress for mobile (desktop has it in side panel) */}
+          {/* Thread Progress for mobile */}
           <div className="md:hidden px-4 pt-3">
-            <ThreadIndicator className="bg-[var(--bg-surface)] p-3 rounded-2xl border border-[var(--border-default)] shadow-sm" />
+            <ThreadIndicator className="bg-[var(--card)] p-3 rounded-[6px] border border-[var(--rule-line)]" />
           </div>
 
           {/* Conversation history & streaming tokens */}
@@ -68,14 +68,14 @@ function JourneyContent() {
           <MessageComposer />
         </section>
 
-        {/* Right Column: Financial Decisions & Tools Panel */}
+        {/* Right Column: Ledger Financial Tools & Records */}
         <aside
-          className="w-full md:w-[420px] lg:w-[460px] h-auto md:h-[calc(100dvh-3.5rem)] overflow-y-auto p-4 sm:p-5 flex flex-col gap-5 bg-[var(--bg-surface-alt)]/50"
+          className="w-full md:w-[420px] lg:w-[460px] h-auto md:h-[calc(100dvh-3.5rem)] overflow-y-auto p-4 sm:p-5 flex flex-col gap-4 bg-[var(--card)]/40 border-l md:border-l-0 border-[var(--rule-line)]"
           aria-label="Financial Tools and Policies"
         >
           {/* Thread Resolution Indicator */}
           <div className="hidden md:block">
-            <ThreadIndicator className="bg-[var(--bg-surface)] p-3.5 rounded-2xl border border-[var(--border-default)] shadow-sm" />
+            <ThreadIndicator className="bg-[var(--card)] p-3 rounded-[6px] border border-[var(--rule-line)]" />
           </div>
 
           {/* Repayment Capacity & Affordability */}
@@ -88,10 +88,10 @@ function JourneyContent() {
           <DocChecklist />
 
           {!hasFinancialData && (
-            <div className="p-6 rounded-2xl bg-[var(--bg-surface)] border border-dashed border-[var(--border-strong)] text-center text-xs text-[var(--text-secondary)] flex flex-col gap-2 my-auto">
-              <span className="font-semibold text-[var(--text-primary)]">Options and Guidance</span>
+            <div className="p-6 rounded-[6px] bg-[var(--card)] border border-dashed border-[var(--rule-line)] text-center text-xs text-[var(--muted-foreground)] flex flex-col gap-2 my-auto font-mono">
+              <span className="font-semibold text-[var(--ink-navy)] uppercase tracking-wider text-[11px]">Records Pending Verification</span>
               <p>
-                As you share your goal and monthly income, your repayment capacity, calculated EMIs, and policy comparisons will appear here in real time.
+                Provide your goal and income details to populate the ledger with exact reducing EMIs, debt-ratio metrics, and required documentation.
               </p>
             </div>
           )}

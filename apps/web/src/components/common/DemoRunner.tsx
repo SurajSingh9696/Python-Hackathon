@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { SparklesIcon, XMarkIcon, ShieldCheckIcon, CheckCircleIcon } from './Icons';
+import { Sparkles, X, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface DemoScenario {
   id: string;
@@ -65,78 +65,75 @@ export function DemoRunner() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#F59E0B] via-[#0F766E] to-[#14B8A6] text-white text-xs font-semibold shadow-md hover:opacity-95 active:scale-95 transition-all"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[var(--rule-line)] bg-[var(--card)] hover:bg-[var(--muted)] text-[var(--ink-navy)] text-xs font-mono transition-colors"
         title="Explore curated real-world financial goals"
       >
-        <SparklesIcon className="w-4 h-4 text-white" />
-        <span>Explore Featured Plans</span>
+        <Sparkles size={14} />
+        <span>Audited Case Studies</span>
       </button>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-up"
           role="dialog"
           aria-modal="true"
           aria-labelledby="featured-runner-title"
         >
-          <div className="w-full max-w-xl bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scaleUp">
-            {/* Header in Deep Teal to Forest */}
-            <div className="p-5 bg-gradient-to-r from-[#0F766E] to-[#132825] text-white flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <ShieldCheckIcon className="w-6 h-6 text-[#22D3EE]" />
-                <div>
-                  <h2 id="featured-runner-title" className="text-base font-bold">
-                    Explore Verified Financial Journeys
-                  </h2>
-                  <p className="text-xs text-white/80">
-                    Select a curated scenario to experience instant affordability analysis and reducing-balance calculations.
-                  </p>
-                </div>
+          <div className="w-full max-w-xl bg-[var(--card)] border border-[var(--rule-line)] rounded-[6px] overflow-hidden flex flex-col font-sans">
+            {/* Header: Clean, No Icon on Heading */}
+            <div className="p-4 border-b border-[var(--rule-line)] flex items-center justify-between">
+              <div>
+                <h2 id="featured-runner-title" className="text-sm font-semibold text-[var(--ink-navy)]">
+                  Audited Financial Case Studies
+                </h2>
+                <p className="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">
+                  Pre-configured test journeys with deterministic EMI and policy outputs.
+                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+                className="p-1 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
                 aria-label="Close"
               >
-                <XMarkIcon className="w-5 h-5" />
+                <X size={14} />
               </button>
             </div>
 
             {/* Scenarios Grid */}
-            <div className="p-5 flex flex-col gap-3.5 max-h-[75vh] overflow-y-auto">
+            <div className="p-4 flex flex-col gap-3 max-h-[70vh] overflow-y-auto font-mono">
               {DEMO_SCENARIOS.map((scenario) => (
                 <div
                   key={scenario.id}
-                  className="p-4 rounded-2xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] hover:border-[#0F766E]/50 transition-all flex flex-col gap-2.5"
+                  className="p-3 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] hover:border-[var(--roll-brass)] transition-colors flex flex-col gap-2"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#0F766E]/10 text-[#0F766E] dark:text-[#22D3EE] border border-[#0F766E]/20">
+                    <span className="roll-chip text-[10px]">
                       {scenario.badge}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleLaunch(scenario)}
-                      className="px-3 py-1 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white text-xs font-semibold active:scale-95 transition-all flex items-center gap-1 shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-[var(--present-green)] hover:bg-[var(--present-green)]/90 text-white text-xs font-mono transition-colors"
                     >
-                      <span>Explore</span>
-                      <span>→</span>
+                      <ArrowRight size={13} />
+                      <span>Run Case</span>
                     </button>
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                    <h3 className="text-xs font-semibold text-[var(--ink-navy)]">
                       {scenario.title}
                     </h3>
-                    <p className="text-xs text-[var(--text-secondary)] italic mt-0.5 font-serif">
+                    <p className="text-[11px] text-[var(--muted-foreground)] italic mt-0.5">
                       &ldquo;{scenario.prompt}&rdquo;
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 border-t border-[var(--border-default)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1.5 border-t border-[var(--rule-line)]">
                     {scenario.highlights.map((h, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
-                        <CheckCircleIcon className="w-3.5 h-3.5 text-[var(--color-leaf)] shrink-0" />
+                      <div key={idx} className="flex items-center gap-1.5 text-[10px] text-[var(--muted-foreground)]">
+                        <CheckCircle2 size={11} className="text-[var(--present-green)] shrink-0" />
                         <span>{h}</span>
                       </div>
                     ))}
@@ -146,12 +143,12 @@ export function DemoRunner() {
             </div>
 
             {/* Footer */}
-            <div className="p-3.5 bg-[var(--bg-surface-alt)] border-t border-[var(--border-default)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-              <span>Powered by Sahaj AI &amp; Paytm Financial Services</span>
+            <div className="p-3 border-t border-[var(--rule-line)] bg-[var(--ledger-paper)] flex items-center justify-between text-xs font-mono text-[var(--muted-foreground)]">
+              <span>Deterministic Validation Suite</span>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-3 py-1 rounded-lg border border-[var(--border-default)] hover:bg-[var(--border-default)] font-medium"
+                className="px-2.5 py-1 rounded-[4px] border border-[var(--rule-line)] bg-[var(--card)] text-[var(--ink-navy)] hover:bg-[var(--muted)]"
               >
                 Dismiss
               </button>

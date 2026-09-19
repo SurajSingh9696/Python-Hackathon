@@ -1,30 +1,23 @@
 import type { Metadata, Viewport } from 'next';
 import {
-  Anek_Latin,
-  Anek_Devanagari,
-  Instrument_Sans,
+  IBM_Plex_Sans,
+  IBM_Plex_Mono,
   Noto_Sans_Devanagari,
 } from 'next/font/google';
 import './globals.css';
 
-/* ── Fonts ──────────────────────────────────────────────────────── */
-const anekLatin = Anek_Latin({
+/* ── Fonts: The Ledger Two-Font System ───────────────────────────── */
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
-  axes: ['wdth'],            // Variable width axis — used on hero headline
-  variable: '--font-anek-latin',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-ibm-plex-sans',
   display: 'swap',
 });
 
-const anekDevanagari = Anek_Devanagari({
-  subsets: ['devanagari'],
-  axes: ['wdth'],
-  variable: '--font-anek-devanagari',
-  display: 'swap',
-});
-
-const instrumentSans = Instrument_Sans({
+const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-instrument-sans',
+  weight: ['400', '500', '600'],
+  variable: '--font-ibm-plex-mono',
   display: 'swap',
 });
 
@@ -55,8 +48,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F1F5FA' },
-    { media: '(prefers-color-scheme: dark)', color: '#071633' },
+    { media: '(prefers-color-scheme: light)', color: '#EDF2E9' },
+    { media: '(prefers-color-scheme: dark)', color: '#121A18' },
   ],
 };
 
@@ -73,9 +66,8 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={[
-        anekLatin.variable,
-        anekDevanagari.variable,
-        instrumentSans.variable,
+        ibmPlexSans.variable,
+        ibmPlexMono.variable,
         notoDevanagari.variable,
       ].join(' ')}
     >
@@ -84,7 +76,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="antialiased bg-[var(--bg-page)] text-[var(--text-primary)]">
+      <body className="antialiased bg-[var(--ledger-paper)] text-[var(--ink-navy)] font-sans selection:bg-[var(--muted)] selection:text-[var(--ink-navy)]">
         {/* Dark mode init script — runs before paint to avoid flash */}
         <script
           dangerouslySetInnerHTML={{

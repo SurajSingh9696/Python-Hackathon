@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import type { DocumentItem } from '../../lib/api';
-import { CheckCircleIcon, AlertTriangleIcon, DocumentTextIcon } from '../common/Icons';
+import { CheckCircle2, AlertTriangle, FileText, Trash2, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface DocumentCardProps {
   document: DocumentItem;
@@ -17,7 +17,7 @@ export function DocumentCard({ document, onDelete }: DocumentCardProps) {
   const isReviewNeeded = document.status === 'review_needed';
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to remove this document? Your verification status will be updated.')) {
+    if (!confirm('Are you sure you want to remove this document? Verification status will be reverted.')) {
       return;
     }
     setIsDeleting(true);
@@ -29,16 +29,16 @@ export function DocumentCard({ document, onDelete }: DocumentCardProps) {
   };
 
   return (
-    <div className="p-3 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] flex flex-col gap-2 text-xs transition-all">
+    <div className="p-2.5 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] flex flex-col gap-2 text-xs font-mono">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
-          <DocumentTextIcon className="w-4 h-4 text-[var(--color-slate)] shrink-0" />
+          <FileText size={14} className="text-[var(--muted-foreground)] shrink-0" />
           <div className="truncate">
-            <span className="font-semibold text-[var(--text-primary)] block truncate">
+            <span className="font-semibold text-[var(--ink-navy)] block truncate">
               {document.originalFilename ?? document.docType.replace(/_/g, ' ')}
             </span>
-            <span className="text-[10px] text-[var(--text-secondary)]">
-              Uploaded on {new Date(document.createdAt).toLocaleDateString('en-IN')}
+            <span className="text-[10px] text-[var(--muted-foreground)]">
+              {new Date(document.createdAt).toLocaleDateString('en-IN')}
             </span>
           </div>
         </div>
@@ -46,16 +46,18 @@ export function DocumentCard({ document, onDelete }: DocumentCardProps) {
         {/* Status Badge */}
         <div className="flex items-center gap-1 shrink-0">
           {isVerified ? (
-            <span className="flex items-center gap-1 text-[var(--color-leaf)] font-medium text-[11px] bg-[var(--color-leaf)]/10 px-2 py-0.5 rounded-full">
-              <CheckCircleIcon className="w-3.5 h-3.5" /> Verified
+            <span className="inline-flex items-center gap-1 text-[var(--present-green)] text-[10px] px-2 py-0.5 rounded-[4px] border border-[var(--present-green)]/30 bg-[var(--present-green)]/10">
+              <CheckCircle2 size={12} />
+              <span>VERIFIED</span>
             </span>
           ) : isReviewNeeded ? (
-            <span className="flex items-center gap-1 text-[var(--color-saffron-thread)] font-medium text-[11px] bg-[var(--color-saffron-thread)]/10 px-2 py-0.5 rounded-full">
-              <AlertTriangleIcon className="w-3.5 h-3.5" /> Review Needed
+            <span className="inline-flex items-center gap-1 text-[var(--absent-red)] text-[10px] px-2 py-0.5 rounded-[4px] border border-[var(--absent-red)]/30 bg-[var(--absent-red)]/10">
+              <AlertTriangle size={12} />
+              <span>REVIEW</span>
             </span>
           ) : (
-            <span className="text-[var(--color-signal-cyan)] text-[11px] font-medium animate-pulse">
-              Reading...
+            <span className="text-[var(--roll-brass)] text-[10px] animate-pulse">
+              READING...
             </span>
           )}
         </div>
@@ -63,22 +65,21 @@ export function DocumentCard({ document, onDelete }: DocumentCardProps) {
 
       {/* Extracted Details Accordion */}
       {document.extractedFields && Object.keys(document.extractedFields).length > 0 && (
-        <div className="border-t border-[var(--border-default)] pt-1.5 mt-1">
+        <div className="border-t border-[var(--rule-line)] pt-1 mt-0.5">
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className="text-[11px] text-[var(--color-signal-cyan)] hover:underline flex items-center gap-1 font-medium"
+            className="text-[10px] text-[var(--roll-brass)] hover:underline inline-flex items-center gap-1"
           >
-            <span>{showDetails ? 'Hide' : 'View'} Masked Details</span>
-            <span>{showDetails ? '▲' : '▼'}</span>
+            <span>{showDetails ? 'Hide Masked Fields' : 'Show Masked Fields'}</span>
           </button>
 
           {showDetails && (
-            <div className="grid grid-cols-2 gap-2 mt-2 p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)]">
+            <div className="grid grid-cols-2 gap-1.5 mt-1.5 p-2 rounded-[4px] bg-[var(--muted)]/20 border border-[var(--rule-line)]">
               {Object.entries(document.extractedFields).map(([k, v]) => (
                 <div key={k} className="flex flex-col">
-                  <span className="text-[10px] text-[var(--text-secondary)] capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
-                  <span className="font-mono text-[11px] text-[var(--text-primary)]">{String(v)}</span>
+                  <span className="text-[9px] text-[var(--muted-foreground)] uppercase">{k.replace(/([A-Z])/g, ' $1')}</span>
+                  <span className="font-mono text-[10px] text-[var(--ink-navy)]">{String(v)}</span>
                 </div>
               ))}
             </div>
@@ -86,15 +87,16 @@ export function DocumentCard({ document, onDelete }: DocumentCardProps) {
         </div>
       )}
 
-      {/* Delete / Re-upload action */}
+      {/* Delete Action Button (Icon on left, Trash2, gap-1.5, size 13) */}
       <div className="flex justify-end pt-1">
         <button
           type="button"
           onClick={handleDelete}
           disabled={isDeleting}
-          className="text-[10px] text-[var(--color-rose)] hover:underline disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 text-[11px] text-[var(--absent-red)] hover:underline disabled:opacity-50"
         >
-          {isDeleting ? 'Removing...' : 'Delete & Re-upload'}
+          <Trash2 size={13} />
+          <span>{isDeleting ? 'Deleting...' : 'Remove Record'}</span>
         </button>
       </div>
     </div>

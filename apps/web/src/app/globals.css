@@ -2,66 +2,103 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS Custom Properties (Sahaj Warm Fintech Palette) ─────────── */
+/* ── AttendX Design System: "The Ledger" ─────────────────────────── */
 :root {
-  /* Exact Sahaj Palette */
-  --sahaj-teal:       #0F766E;
-  --sahaj-teal-light: #14B8A6;
-  --sahaj-cyan:       #22D3EE;
-  --sahaj-orange:     #F59E0B;
-  --sahaj-amber:      #FBBF24;
+  /* 1. Core Ledger Palette */
+  --ledger-paper:     #EDF2E9; /* Soft, warm greenish off-white (primary background) */
+  --background:       #EDF2E9;
+  --card:             #F5F8F2; /* Lighter container paper */
+  --popover:          #F5F8F2;
+  --surface:          #F5F8F2;
+  --surface-alt:      #E8EFE4;
 
-  --background:       #FAFCFB;
-  --surface:          #FFFFFF;
-  --text-primary:     #111827;
-  --text-secondary:   #4B5563;
-  --border:           #E2ECE9;
+  --ink-navy:         #1E2A33; /* Deep slate navy (primary text, reduces eye strain) */
+  --foreground:       #1E2A33;
+  --text-primary:     #1E2A33;
+  --text-secondary:   #5A7260;
 
-  --success:          #10B981;
-  --error:            #EF4444;
+  --rule-line:        #B9CBB0; /* Soft muted sage green for ALL borders & dividers */
+  --border:           #B9CBB0;
+  --border-default:   #B9CBB0;
+  --border-strong:    #9CB293;
 
-  /* Aliases & Semantic Tokens - Light Theme */
-  --color-ink-indigo:     var(--sahaj-teal);
-  --color-deep-night:     #0C1A18;
-  --color-signal-cyan:    #06B6D4;
-  --color-saffron-thread: #F59E0B;
-  --color-mist:           var(--background);
-  --color-slate:          var(--text-secondary);
-  --color-leaf:           var(--success);
-  --color-rose:           var(--error);
+  --muted:            #D8E4D3; /* Subtle hover states & secondary backgrounds */
+  --secondary:        #D8E4D3;
+  --muted-foreground: #5A7260; /* Secondary text, labels, subtext */
 
-  --bg-page:          var(--background);
-  --bg-surface:       var(--surface);
-  --bg-surface-alt:   #F3F9F8;
-  --border-default:   var(--border);
-  --border-strong:    #C4DDD8;
-  --shadow-card:      0 1px 3px rgba(15, 118, 110, 0.05), 0 6px 16px rgba(15, 118, 110, 0.04);
-  --shadow-card-hover: 0 4px 6px rgba(15, 118, 110, 0.08), 0 12px 28px rgba(15, 118, 110, 0.08);
+  --present-green:    #2F6B4F; /* Semantic "Attended" / "Safe" state */
+  --success:          #2F6B4F;
+  --absent-red:       #B33A2E; /* Semantic "Missed" / "Risk" / Destructive state */
+  --error:            #B33A2E;
+  --roll-brass:       #A9822F; /* Accent: brass focus rings, tags, highlights */
+  --accent:           #A9822F;
 
-  /* Thread Transition */
-  --thread-unresolved: #F59E0B;
-  --thread-resolved:   #06B6D4;
+  --paper-sand:       #EDF2E9;
+  --radius:           0.375rem; /* 6px */
 
-  /* Signature Sahaj Gradient */
-  --gradient-sahaj: linear-gradient(135deg, #F59E0B 0%, #06B6D4 100%);
-  --gradient-teal:  linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+  /* Compatibility Tokens */
+  --sahaj-teal:       #2F6B4F;
+  --sahaj-teal-light: #3E8262;
+  --sahaj-cyan:       #2F6B4F;
+  --sahaj-orange:     #A9822F;
+  --sahaj-amber:      #A9822F;
+
+  --color-ink-indigo:     #1E2A33;
+  --color-deep-night:     #121A18;
+  --color-signal-cyan:    #2F6B4F;
+  --color-saffron-thread: #A9822F;
+  --color-mist:           #EDF2E9;
+  --color-slate:          #5A7260;
+  --color-leaf:           #2F6B4F;
+  --color-rose:           #B33A2E;
+
+  --bg-page:          var(--ledger-paper);
+  --bg-surface:       var(--card);
+  --bg-surface-alt:   #E8EFE4;
+
+  /* Shadows: Strictly avoided in Ledger */
+  --shadow-card:       none;
+  --shadow-card-hover: none;
 
   /* Spacing */
   --header-height:       56px;
-  --journey-panel-width: 380px;
+  --journey-panel-width: 420px;
   --composer-height:     72px;
 }
 
-/* ── Dark Theme (Only when explicitly toggled) ───────────────────── */
+/* ── Dark Theme (Ledger Night Mode) ──────────────────────────────── */
 [data-theme="dark"] {
-  --bg-page:        #0C1A18;
-  --bg-surface:     #132825;
-  --bg-surface-alt: #18332F;
-  --text-primary:   #F0FDF4;
-  --text-secondary: #94A3B8;
-  --border-default: rgba(221, 232, 230, 0.12);
-  --border-strong:  rgba(221, 232, 230, 0.22);
-  --shadow-card:    0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --ledger-paper:     #121A18;
+  --background:       #121A18;
+  --card:             #182421;
+  --popover:          #182421;
+  --surface:          #182421;
+  --surface-alt:      #1E2E2A;
+
+  --ink-navy:         #E8F0E6;
+  --foreground:       #E8F0E6;
+  --text-primary:     #E8F0E6;
+  --text-secondary:   #8BA492;
+
+  --rule-line:        #2E453A;
+  --border:           #2E453A;
+  --border-default:   #2E453A;
+  --border-strong:    #3D5A4D;
+
+  --muted:            #24352D;
+  --secondary:        #24352D;
+  --muted-foreground: #8BA492;
+
+  --present-green:    #4ADE80;
+  --success:          #4ADE80;
+  --absent-red:       #F87171;
+  --error:            #F87171;
+  --roll-brass:       #D4AF37;
+  --accent:           #D4AF37;
+
+  --bg-page:          var(--ledger-paper);
+  --bg-surface:       var(--card);
+  --bg-surface-alt:   #1E2E2A;
 }
 
 /* ── Base Reset & Typography ─────────────────────────────────────── */
@@ -78,13 +115,33 @@ html {
 }
 
 body {
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  font-family: var(--font-instrument-sans), var(--font-noto-devanagari), system-ui, sans-serif;
-  font-size: 1rem;
-  line-height: 1.65;
+  background-color: var(--ledger-paper);
+  color: var(--ink-navy);
+  font-family: var(--font-ibm-plex-sans), var(--font-noto-devanagari), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+}
+
+@layer base {
+  /* Enforces monospace numbers across all tables globally */
+  td, th, .tabular, .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Replaces default blue focus ring with brass accent */
+  *:focus-visible {
+    outline: 2px solid var(--roll-brass);
+    outline-offset: 2px;
+  }
+
+  /* Thin, academic scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--rule-line); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--roll-brass); }
 }
 
 /* ── Global input border reset ───────────────────────────────────── */
@@ -92,6 +149,8 @@ input, textarea {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: transparent;
+  color: inherit;
 }
 
 input:focus, textarea:focus {
@@ -99,72 +158,117 @@ input:focus, textarea:focus {
   box-shadow: none !important;
 }
 
-/* ── Money / Numerals ────────────────────────────────────────────── */
-.tabular-nums,
-[class*="amount"],
-[class*="money"],
-[class*="inr"] {
+/* ── Academic Typographic Classes ────────────────────────────────── */
+.text-display {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.text-label,
+.label {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+}
+
+.mono,
+.font-mono {
+  font-family: var(--font-ibm-plex-mono), monospace;
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Prose width constraint ──────────────────────────────────────── */
-.prose-sahaj {
-  max-width: 68ch;
-  line-height: 1.7;
+/* ── The Ledger Card (1px ruled line, zero shadow) ───────────────── */
+.card,
+.ledger-card {
+  background-color: var(--card);
+  border: 1px solid var(--rule-line);
+  border-radius: var(--radius);
+  box-shadow: none !important;
 }
 
-/* Line height for Devanagari */
-:lang(hi),
-.lang-hi,
-.lang-hinglish {
-  line-height: 1.85;
+/* ── The Roll Chip ───────────────────────────────────────────────── */
+.roll-chip {
+  border: 1px solid var(--roll-brass);
+  color: var(--roll-brass);
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 11px;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-/* ── Thread SVG (2D poster / progress) ──────────────────────────── */
-.thread-svg path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* ── The Status Button & Chips ───────────────────────────────────── */
+.status-present {
+  color: var(--present-green);
+  background-color: rgba(47, 107, 79, 0.1);
+  border: 1px solid rgba(47, 107, 79, 0.25);
 }
 
-.thread-svg path.resolved {
-  stroke: var(--color-signal-cyan);
+.status-absent {
+  color: var(--absent-red);
+  background-color: rgba(179, 58, 46, 0.1);
+  border: 1px solid rgba(179, 58, 46, 0.25);
 }
 
-.thread-svg path.unresolved {
-  stroke: var(--color-saffron-thread);
+/* ── Alert Card (Subtle Red Tint, 1px border) ────────────────────── */
+.alert-card {
+  background-color: rgba(179, 58, 46, 0.06);
+  border: 1px solid rgba(179, 58, 46, 0.25);
+  border-radius: var(--radius);
+  color: var(--ink-navy);
 }
 
-/* ── Skeleton / Loading shimmer ──────────────────────────────────── */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--border-default) 0%,
-    var(--bg-surface-alt) 50%,
-    var(--border-default) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s linear infinite;
-  border-radius: 0.375rem;
+/* ── Threshold Bar & Progress ────────────────────────────────────── */
+.threshold-bar-fill {
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Scrollbar styling ───────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-slate);
+/* ── Subtle Entrance Animation ───────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ── Focus styles (keyboard accessible) ─────────────────────────── */
-:focus-visible {
-  outline: 2px solid var(--color-signal-cyan);
-  outline-offset: 2px;
-  border-radius: 4px;
+.animate-fade-up,
+.fade-up {
+  animation: fadeUp 0.35s ease both;
+}
+
+/* ── Academic Data Tables ────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background-color: rgba(216, 228, 211, 0.35);
+  border-bottom: 1px solid var(--rule-line);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+td {
+  border-bottom: 1px solid var(--rule-line);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────── */
@@ -177,11 +281,6 @@ input:focus, textarea:focus {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .thread-svg {
-    /* Show static state instead of animation */
-    animation: none;
-  }
 }
 
 /* ── Mobile viewport helpers ─────────────────────────────────────── */
@@ -191,61 +290,4 @@ input:focus, textarea:focus {
 
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-/* ── Verified trust badge ────────────────────────────────────────── */
-.demo-badge,
-.trust-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.2rem 0.65rem;
-  background: rgba(18, 161, 80, 0.08);
-  border: 1px solid rgba(18, 161, 80, 0.25);
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-leaf);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
-/* ── Chip component ──────────────────────────────────────────────── */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid var(--border-default);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.chip:hover {
-  border-color: var(--color-signal-cyan);
-  box-shadow: 0 0 0 3px rgba(0, 185, 241, 0.1);
-}
-
-.chip-active {
-  border-color: var(--color-signal-cyan);
-  background: rgba(0, 185, 241, 0.08);
-  color: var(--color-signal-cyan);
-}
-
-/* ── Source citation chip ────────────────────────────────────────── */
-.source-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.6875rem;
-  background: var(--bg-surface-alt);
-  border: 1px solid var(--border-default);
-  color: var(--text-secondary);
 }

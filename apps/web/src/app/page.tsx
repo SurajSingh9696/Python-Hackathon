@@ -2,80 +2,69 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LandingForm } from '@/components/landing/LandingForm';
 import { DemoBadge } from '@/components/common/DemoBadge';
-import { SparklesIcon, ShieldCheckIcon, CheckCircleIcon } from '@/components/common/Icons';
+import { ExternalLink, Circle, CheckCircle2, ShieldCheck, Clock } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Sahaj — Financial Journey Companion | Paytm',
+  title: 'Sahaj — Financial Journey Companion | The Ledger',
   description: 'AI-guided financial journey for education loans, health insurance, and personal credit with deterministic math and transparent guidance.',
 };
 
 const CATEGORIES = [
   {
-    icon: '🎓',
+    code: 'EDU-80E',
     title: 'Higher Education Loans',
     tag: 'Moratorium & 80E',
-    tagColor: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-800',
-    accentColor: 'from-[#0F766E] to-[#22D3EE]',
-    iconBg: 'bg-teal-50 text-teal-600 dark:bg-teal-900/30',
-    desc: 'Up to ₹1.5 Cr for India & abroad studies. Flexible repayment & 80E tax benefits.',
+    tagClass: 'text-[var(--present-green)] bg-[var(--present-green)]/10 border-[var(--present-green)]/30',
+    desc: 'Up to ₹1.5 Cr for India & abroad studies. Complete moratorium & 80E tax deduction schedules.',
     query: 'Mujhe Germany me MS ke liye 30 lakh ka education loan chahiye, salary 75 hazar hai',
   },
   {
-    icon: '🏥',
+    code: 'HLT-100',
     title: 'Family Health Cover',
     tag: '100% Cashless',
-    tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    accentColor: 'from-[#10B981] to-[#0F766E]',
-    iconBg: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30',
-    desc: '10,000+ network hospitals, zero room rent capping, instant claim guidance.',
+    tagClass: 'text-[var(--present-green)] bg-[var(--present-green)]/10 border-[var(--present-green)]/30',
+    desc: '10,000+ network hospitals, zero room rent capping, instant hospital claim guidance.',
     query: 'Family ke liye 10 lakh ka comprehensive health cover chahiye, 4 members hain',
   },
   {
-    icon: '⚡',
+    code: 'PL-105',
     title: 'Instant Personal Credit',
     tag: 'From 10.5% p.a.',
-    tagColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
-    accentColor: 'from-[#F59E0B] to-[#FBBF24]',
-    iconBg: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30',
-    desc: 'Calculated reducing EMI from 10.5% p.a. Zero hidden fees or foreclosure penalty.',
+    tagClass: 'text-[var(--roll-brass)] bg-[var(--roll-brass)]/10 border-[var(--roll-brass)]/30',
+    desc: 'Exact reducing EMI from 10.5% p.a. Zero hidden fees or early foreclosure penalties.',
     query: 'Home improvement ke liye 5 lakh ka personal loan chahiye, lowest EMI options kya hain',
   },
   {
-    icon: '🏢',
+    code: 'MSME-CGT',
     title: 'MSME & Business Capital',
     tag: 'CGTMSE Covered',
-    tagColor: 'bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800',
-    accentColor: 'from-[#06B6D4] to-[#0F766E]',
-    iconBg: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30',
-    desc: 'Working capital under CGTMSE guarantee with transparent eligibility calculation.',
+    tagClass: 'text-[var(--roll-brass)] bg-[var(--roll-brass)]/10 border-[var(--roll-brass)]/30',
+    desc: 'Collateral-free working capital under CGTMSE guarantee with transparent eligibility verification.',
     query: 'Business expansion ke liye 20 lakh working capital loan chahiye with flexible repayment',
   },
 ];
 
 const TRUST_STATS = [
-  { value: '₹2,500+ Cr', label: 'Guided & Calculated', icon: '💰', badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { value: '100%', label: 'Deterministic Math', icon: '⚡', badgeBg: 'bg-teal-50 text-teal-700 border-teal-200' },
-  { value: '15+', label: 'RBI-Regulated Partners', icon: '🏛️', badgeBg: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
-  { value: '< 1 Sec', label: 'Instant Evaluation', icon: '⏱️', badgeBg: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { value: '₹2,500+ Cr', label: 'Calculated & Guided', subtext: 'Exact reducing math' },
+  { value: '100%', label: 'Deterministic Accuracy', subtext: 'Zero hallucinated EMIs' },
+  { value: '15+', label: 'RBI-Regulated Partners', subtext: 'Institutional trust' },
+  { value: '< 1 Sec', label: 'Verification Latency', subtext: 'Sub-second checks' },
 ];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[var(--bg-page)] text-[var(--text-primary)]">
-      {/* ── Header ──────────────────────────────────────────── */}
-      <header className="h-16 px-4 md:px-8 flex items-center justify-between border-b border-[var(--border-default)] bg-[var(--bg-surface)]/90 backdrop-blur-md sticky top-0 z-40">
+    <div className="min-h-[100dvh] flex flex-col bg-[var(--ledger-paper)] text-[var(--ink-navy)] font-sans">
+      {/* ── Header: Crisp Ledger Top Bar ─────────────────────────────── */}
+      <header className="h-14 px-4 sm:px-8 flex items-center justify-between border-b border-[var(--rule-line)] bg-[var(--card)] sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <span
-            className="font-display font-bold text-2xl tracking-tight text-[#0F766E] dark:text-[#14B8A6] flex items-center gap-1.5"
-            style={{ fontVariationSettings: "'wdth' 125" }}
-          >
+          <span className="font-mono font-bold text-xl tracking-tight text-[var(--ink-navy)] flex items-center gap-2">
             Sahaj
-            <span className="text-xs px-2 py-0.5 rounded-md bg-[#22D3EE]/15 text-[#0F766E] dark:text-[#22D3EE] font-mono font-semibold">
-              AI
+            <span className="roll-chip text-[10px]">
+              LEDGER v0.1
             </span>
           </span>
-          <span className="text-[var(--text-secondary)] text-sm font-medium hidden sm:inline border-l border-[var(--border-default)] pl-3">
-            सहज
+          <span className="text-[var(--muted-foreground)] text-xs font-mono hidden sm:inline border-l border-[var(--rule-line)] pl-3">
+            RECORD BOOK
           </span>
         </div>
 
@@ -83,136 +72,123 @@ export default function LandingPage() {
           <DemoBadge />
           <Link
             href="/journey"
-            className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-[var(--border-default)] hover:border-[#0F766E]/40 hover:bg-[#0F766E]/5 transition-all hidden sm:inline-flex items-center gap-1 text-[#0F766E] dark:text-[#14B8A6]"
+            className="text-xs font-medium px-3 py-1.5 rounded-[6px] border border-[var(--rule-line)] hover:bg-[var(--muted)] transition-colors inline-flex items-center gap-1.5 text-[var(--ink-navy)]"
           >
+            <ExternalLink size={14} />
             <span>Direct Console</span>
-            <span>→</span>
           </Link>
         </div>
       </header>
 
-      {/* ── Hero ────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-20 max-w-6xl mx-auto w-full">
-        {/* Clean Fintech Trust Badge */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white dark:bg-[#1E293B] border border-[#DDE8E6] dark:border-teal-900/40 shadow-sm text-xs font-semibold text-[#0F766E] dark:text-[#22D3EE] mb-8 hover:border-[#14B8A6] transition-all">
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
-          </span>
-          <span>AI-Powered Financial Journey Companion</span>
-          <span className="text-[#94A3B8]">·</span>
-          <span className="text-[#F59E0B] font-medium">100% Deterministic Math</span>
+      {/* ── Hero Content: The Ledger Academic Layout ───────────────────── */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-16 max-w-5xl mx-auto w-full animate-fade-up">
+        {/* Academic Status Chip */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] text-xs text-[var(--ink-navy)] mb-8 font-mono">
+          <Circle size={8} className="fill-current text-[var(--present-green)] animate-pulse" />
+          <span className="font-medium">FINANCIAL RECORD COMPANION</span>
+          <span className="text-[var(--rule-line)]">|</span>
+          <span className="text-[var(--roll-brass)]">DETERMINISTIC MATH</span>
         </div>
 
-        {/* Headline */}
-        <h1
-          className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-center text-[var(--text-primary)] mb-4 max-w-3xl leading-[1.15] tracking-tight"
-          style={{ fontVariationSettings: "'wdth' 115" }}
-        >
-          Finance that{' '}
-          <span className="bg-gradient-to-r from-[#F59E0B] via-[#0F766E] to-[#22D3EE] bg-clip-text text-transparent">
-            understands you
-          </span>
+        {/* Primary Heading */}
+        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl font-semibold text-center text-[var(--ink-navy)] mb-3 max-w-2xl leading-tight tracking-tight">
+          Finance that understands the user
         </h1>
 
-        <p className="text-[var(--text-secondary)] text-center text-base md:text-xl mb-10 max-w-2xl leading-relaxed font-body">
-          Tell us your goal in everyday words. We untangle policies, compute exact reducing-balance EMIs, and guide you through every milestone.
+        <p className="text-[var(--muted-foreground)] text-center text-sm md:text-base mb-8 max-w-xl leading-relaxed">
+          State your goal in plain words. We verify regulatory policies, compute precise reducing-balance schedules, and document every milestone cleanly.
         </p>
 
-        {/* Interactive Form with Voice Typing */}
+        {/* The Ledger Input Container */}
         <LandingForm />
 
-        {/* Language note */}
-        <p className="mt-4 text-xs text-[var(--text-secondary)] text-center">
-          Speak or type in English, Hindi (हिंदी) or Hinglish — voice recognition and responses enabled.
+        {/* Trilingual Note */}
+        <p className="mt-3 text-[11px] font-mono text-[var(--muted-foreground)] text-center">
+          Available in English, Hindi (हिंदी) and Hinglish · Real-time speech and transcription
         </p>
 
-        {/* ── Category Cards Grid ──────────────────────────────── */}
-        <div className="w-full mt-16 md:mt-20">
-          <div className="text-center mb-6">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E] dark:text-[#14B8A6]">
-              Explore Popular Solutions
+        {/* ── Category Records ─────────────────────────────────────────── */}
+        <div className="w-full mt-14 md:mt-16">
+          <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-2 mb-4">
+            <span className="text-label">
+              Standard Loan &amp; Policy Categories
             </span>
-            <h2 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] mt-1 font-display">
-              Tailored assistance across your life milestones
-            </h2>
+            <span className="text-xs font-mono text-[var(--muted-foreground)]">
+              4 RECORDS LOADED
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {CATEGORIES.map((cat, i) => (
               <Link
                 key={i}
                 href={`/journey?q=${encodeURIComponent(cat.query)}`}
-                className="relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700/80 hover:border-[#0F766E]/60 hover:shadow-md transition-all duration-200 flex flex-col justify-between group overflow-hidden"
+                className="p-4 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] hover:border-[var(--roll-brass)] hover:bg-[var(--card)] transition-colors flex flex-col justify-between gap-3 group"
               >
-                {/* Vibrant accent stripe on top of card */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.accentColor}`} />
-
                 <div>
-                  <div className="flex items-center justify-between mb-3.5 pt-1">
-                    <div className={`w-10 h-10 rounded-xl ${cat.iconBg} flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform`}>
-                      {cat.icon}
-                    </div>
-                    <span className={`text-[10px] font-bold tracking-tight px-2.5 py-0.5 rounded-full border ${cat.tagColor}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-medium text-[var(--muted-foreground)]">
+                      [{cat.code}]
+                    </span>
+                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-[4px] border ${cat.tagClass}`}>
                       {cat.tag}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[#0F766E] dark:group-hover:text-[#14B8A6] transition-colors">
+                  <h3 className="font-medium text-sm text-[var(--ink-navy)] group-hover:text-[var(--present-green)] transition-colors">
                     {cat.title}
                   </h3>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+                  <p className="text-xs text-[var(--muted-foreground)] mt-1.5 leading-relaxed">
                     {cat.desc}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#E2ECE9] dark:border-slate-700/60 flex items-center justify-between text-xs font-bold text-[#0F766E] dark:text-[#14B8A6]">
-                  <span>Explore Plan</span>
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <div className="pt-2.5 border-t border-[var(--rule-line)] flex items-center justify-between text-xs font-mono text-[var(--ink-navy)]">
+                  <span>View Terms</span>
+                  <span className="group-hover:translate-x-0.5 transition-transform text-[var(--roll-brass)]">→</span>
                 </div>
               </Link>
             ))}
           </div>
         </div>
 
-        {/* ── Trust Metrics Row with Vibrant Badges ───────────── */}
-        <div className="w-full mt-12 py-6 px-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-[#E2ECE9] dark:border-slate-700/80 shadow-xs grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {/* ── Trust Stats Table / Ledger Row ──────────────────────────── */}
+        <div className="w-full mt-8 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--rule-line)]">
           {TRUST_STATS.map((stat, i) => (
-            <div key={i} className="flex flex-col items-center justify-center gap-1">
-              <span className={`text-xs px-2 py-0.5 rounded-md border font-semibold ${stat.badgeBg} flex items-center gap-1 mb-1`}>
-                <span>{stat.icon}</span>
-                <span>Verified</span>
-              </span>
-              <span className="font-display font-bold text-2xl md:text-3xl text-[#0F766E] dark:text-[#22D3EE] tabular-nums">
+            <div key={i} className="p-4 flex flex-col items-center justify-center text-center">
+              <span className="text-display text-2xl sm:text-3xl text-[var(--ink-navy)] mb-1">
                 {stat.value}
               </span>
-              <span className="text-xs text-[var(--text-secondary)] font-medium">
+              <span className="text-label text-[10px]">
                 {stat.label}
+              </span>
+              <span className="text-[11px] font-mono text-[var(--muted-foreground)] mt-0.5">
+                {stat.subtext}
               </span>
             </div>
           ))}
         </div>
       </main>
 
-      {/* ── Realistic Fintech Footer ────────────────────────── */}
-      <footer className="px-6 py-8 border-t border-[var(--border-default)] bg-[var(--bg-surface)] text-xs text-[var(--text-secondary)]">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <span className="font-bold text-[var(--text-primary)]">Sahaj AI</span>
+      {/* ── Footer: Academic Record Registry ─────────────────────────── */}
+      <footer className="px-6 py-6 border-t border-[var(--rule-line)] bg-[var(--card)] text-xs text-[var(--muted-foreground)] mt-auto">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 font-mono">
+          <div className="flex flex-wrap items-center gap-2 text-center md:text-left">
+            <span className="font-semibold text-[var(--ink-navy)]">Sahaj AI</span>
             <span>·</span>
-            <span>One97 Communications Limited Partner Network</span>
+            <span>The Ledger Architecture</span>
             <span>·</span>
-            <span>RBI-Regulated Lending &amp; IRDAI Insurance Framework</span>
+            <span>RBI-Regulated Framework</span>
           </div>
 
-          <div className="flex items-center gap-4 text-center">
-            <Link href="/journey" className="hover:text-[var(--color-signal-cyan)] transition-colors font-medium">
-              Journey Console
+          <div className="flex items-center gap-3">
+            <Link href="/journey" className="hover:text-[var(--ink-navy)] transition-colors underline">
+              Console
             </Link>
             <span>·</span>
-            <span className="opacity-80">256-Bit SSL Encrypted</span>
+            <span>Deterministic Engine</span>
             <span>·</span>
-            <span className="opacity-80">Zero Math Hallucination</span>
+            <span>256-Bit SSL</span>
           </div>
         </div>
       </footer>

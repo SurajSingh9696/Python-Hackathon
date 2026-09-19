@@ -18,13 +18,14 @@
     "@react-three/fiber": "^8.17.10",
     "@sahaj/shared": "workspace:*",
     "@tanstack/react-query": "^5.59.0",
+    "lucide-react": "^1.47.0",
     "motion": "^11.11.7",
     "next": "^14.2.16",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.169.0",
-    "zustand": "^5.0.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.47.2",

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { uploadDocument, type UploadDocumentResponse } from '../../lib/api';
-import { XMarkIcon, DocumentTextIcon, CheckCircleIcon, AlertTriangleIcon } from '../common/Icons';
+import { X, FileText, CheckCircle2, AlertTriangle, Plus, Trash2 } from 'lucide-react';
 
 interface DocumentUploadModalProps {
   journeyId: string;
@@ -25,7 +25,6 @@ export function DocumentUploadModal({
   const [error, setError] = useState<string | null>(null);
   const [extractionResult, setExtractionResult] = useState<UploadDocumentResponse | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -48,7 +47,6 @@ export function DocumentUploadModal({
     setProgress(20);
 
     try {
-      // Convert to base64
       const reader = new FileReader();
       reader.onload = async () => {
         try {
@@ -58,134 +56,125 @@ export function DocumentUploadModal({
           const res = await uploadDocument(journeyId, {
             docType,
             filename: file.name,
+            mimeType: file.type || 'application/pdf',
             contentBase64: base64Content,
-            mimeType: file.type,
           });
 
           setProgress(100);
           setExtractionResult(res);
-          setIsUploading(false);
           onSuccess(res);
-        } catch (err) {
+        } catch (err: unknown) {
+          setError(err instanceof Error ? err.message : 'Upload failed');
           setIsUploading(false);
-          setError((err as Error).message || 'Failed to upload and extract document');
         }
       };
-
-      reader.onerror = () => {
-        setIsUploading(false);
-        setError('Error reading file. Please try again.');
-      };
-
       reader.readAsDataURL(file);
-    } catch (err) {
+    } catch {
+      setError('Failed to read file for upload');
       setIsUploading(false);
-      setError((err as Error).message);
     }
   };
 
   const handleRetry = () => {
     setFile(null);
-    setExtractionResult(null);
-    setProgress(0);
     setError(null);
+    setProgress(0);
+    setExtractionResult(null);
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-up"
       role="dialog"
       aria-modal="true"
       aria-labelledby="upload-modal-title"
     >
-      <div className="w-full max-w-lg p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-2xl flex flex-col gap-5 animate-scaleUp">
+      <div className="w-full max-w-md p-5 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] flex flex-col gap-4 font-sans">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-3">
-          <div className="flex items-center gap-2">
-            <DocumentTextIcon className="w-5 h-5 text-[var(--color-signal-cyan)]" />
-            <h3 id="upload-modal-title" className="font-semibold text-base text-[var(--text-primary)]">
-              Upload {docLabel}
+        <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-2.5">
+          <div className="flex items-center gap-1.5 text-label">
+            <FileText size={14} className="text-[var(--roll-brass)]" />
+            <h3 id="upload-modal-title" className="font-semibold text-xs text-[var(--ink-navy)]">
+              Document Audit Registry: {docLabel}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-default)] transition-colors"
+            className="p-1 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
             aria-label="Close modal"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <X size={14} />
           </button>
         </div>
 
-        {/* Error message */}
         {error && (
-          <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 flex items-center gap-2">
-            <AlertTriangleIcon className="w-4 h-4 shrink-0" />
+          <div className="alert-card p-2 text-xs font-mono flex items-center gap-2">
+            <AlertTriangle size={13} className="text-[var(--absent-red)] shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Extraction Success View */}
         {extractionResult ? (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 text-[var(--color-leaf)] font-semibold text-sm">
-              <CheckCircleIcon className="w-5 h-5" />
-              <span>Document verified & extracted</span>
+          /* Extraction Result View */
+          <div className="flex flex-col gap-3 font-mono">
+            <div className="flex items-center gap-2 text-[var(--present-green)] text-xs">
+              <CheckCircle2 size={16} />
+              <span className="font-bold">Extraction &amp; PII Redaction Complete</span>
             </div>
 
             {/* Masked Summary Card */}
-            <div className="p-4 rounded-2xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] flex flex-col gap-2 text-xs">
-              <span className="font-semibold uppercase tracking-wider text-[var(--text-secondary)] text-[10px]">
-                Masked Extraction Summary (Zero Raw PII Stored)
+            <div className="p-3 rounded-[4px] bg-[var(--ledger-paper)] border border-[var(--rule-line)] flex flex-col gap-2 text-xs">
+              <span className="text-label text-[10px]">
+                Audited Fields (Zero Raw PII Retained)
               </span>
-              <div className="grid grid-cols-2 gap-2 mt-1">
+              <div className="grid grid-cols-2 gap-2 mt-0.5">
                 {Object.entries(extractionResult.extractedSummary).map(([k, v]) => (
                   <div key={k} className="flex flex-col">
-                    <span className="text-[11px] text-[var(--text-secondary)] capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
-                    <span className="font-medium text-[var(--text-primary)]">{String(v)}</span>
+                    <span className="text-[10px] text-[var(--muted-foreground)] uppercase">{k.replace(/([A-Z])/g, ' $1')}</span>
+                    <span className="font-medium text-[var(--ink-navy)] text-[11px]">{String(v)}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {extractionResult.journeyStateUpdated && (
-              <div className="p-3 rounded-xl bg-[var(--color-leaf)]/10 text-[var(--color-leaf)] text-xs font-semibold">
-                ✓ All mandatory documents verified! Next milestone unlocked: {extractionResult.journeyStateUpdated}
+              <div className="p-2 rounded-[4px] bg-[var(--present-green)]/10 border border-[var(--present-green)]/30 text-[var(--present-green)] text-xs">
+                Milestone updated to: {extractionResult.journeyStateUpdated}
               </div>
             )}
 
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2.5 rounded-xl bg-[var(--color-signal-cyan)] text-white font-semibold text-sm hover:bg-[#009fd4] transition-all"
+              className="w-full py-1.5 rounded-[4px] border border-[var(--rule-line)] bg-[var(--muted)] text-[var(--ink-navy)] text-xs hover:bg-[var(--rule-line)]/50 transition-colors"
             >
               Done
             </button>
           </div>
         ) : (
           /* File Pick & Upload View */
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 font-mono">
             {/* Drag & Drop Box */}
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-[var(--border-strong)] hover:border-[var(--color-signal-cyan)] rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-[var(--bg-surface-alt)]/50"
+              className="border border-dashed border-[var(--rule-line)] hover:border-[var(--roll-brass)] rounded-[6px] p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-[var(--ledger-paper)]"
             >
-              <DocumentTextIcon className="w-8 h-8 text-[var(--color-slate)] mb-2" />
-              <p className="text-sm font-medium text-[var(--text-primary)]">
-                {file ? file.name : 'Click or drag file here to upload'}
+              <FileText size={24} className="text-[var(--muted-foreground)] mb-1.5" />
+              <p className="text-xs font-medium text-[var(--ink-navy)]">
+                {file ? file.name : 'Select or drag document to archive'}
               </p>
-              <span className="text-xs text-[var(--text-secondary)] mt-1">
+              <span className="text-[10px] text-[var(--muted-foreground)] mt-0.5">
                 PDF, JPG, PNG (Max 10MB)
               </span>
 
               {file && (
-                <span className="text-xs font-semibold text-[var(--color-signal-cyan)] mt-2">
+                <span className="text-[11px] text-[var(--present-green)] mt-1.5 font-bold">
                   {(file.size / 1024).toFixed(1)} KB selected
                 </span>
               )}
             </div>
 
-            {/* Hidden file & camera inputs */}
             <input
               ref={fileInputRef}
               type="file"
@@ -193,57 +182,42 @@ export function DocumentUploadModal({
               onChange={handleFileChange}
               className="hidden"
             />
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleFileChange}
-              className="hidden"
-            />
 
-            {/* Camera trigger for mobile */}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => cameraInputRef.current?.click()}
-                className="flex-1 py-2 rounded-xl border border-[var(--border-default)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-default)] transition-colors flex items-center justify-center gap-1.5"
-              >
-                <span>📷 Take Photo</span>
-              </button>
-              {file && (
+            {file && (
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={handleRetry}
-                  className="px-3 py-2 rounded-xl text-xs text-[var(--color-rose)] hover:bg-red-50 transition-colors"
+                  className="inline-flex items-center gap-1 text-[11px] text-[var(--absent-red)] hover:underline"
                 >
-                  Clear
+                  <Trash2 size={12} />
+                  <span>Clear File</span>
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Upload Progress Bar */}
             {isUploading && (
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-xs text-[var(--text-secondary)]">
-                  <span>Extracting & Masking PII...</span>
-                  <span>{progress}%</span>
+              <div className="flex flex-col gap-1 text-xs">
+                <div className="flex justify-between text-[11px] text-[var(--muted-foreground)]">
+                  <span>Extracting &amp; Masking PII...</span>
+                  <span className="tabular-nums">{progress}%</span>
                 </div>
-                <div className="w-full h-2 bg-[var(--border-default)] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[var(--muted)] rounded-[2px] border border-[var(--rule-line)] overflow-hidden">
                   <div
-                    className="h-full bg-[var(--color-signal-cyan)] transition-all duration-300"
+                    className="h-full bg-[var(--present-green)] transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex gap-2 pt-2">
+            {/* Action Buttons: Icon on LEFT, size 14, gap-1.5 */}
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-2.5 rounded-xl border border-[var(--border-default)] text-[var(--text-primary)] font-semibold text-xs sm:text-sm hover:bg-[var(--border-default)] transition-colors"
+                className="flex-1 py-1.5 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] text-xs transition-colors"
               >
                 Cancel
               </button>
@@ -251,9 +225,10 @@ export function DocumentUploadModal({
                 type="button"
                 onClick={handleUpload}
                 disabled={!file || isUploading}
-                className="flex-1 py-2.5 rounded-xl bg-[var(--color-signal-cyan)] text-white font-semibold text-xs sm:text-sm hover:bg-[#009fd4] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 py-1.5 rounded-[4px] bg-[var(--present-green)] hover:bg-[var(--present-green)]/90 text-white font-medium text-xs inline-flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isUploading ? 'Verifying...' : 'Upload & Verify'}
+                <Plus size={14} />
+                <span>{isUploading ? 'Verifying...' : 'Upload & Verify'}</span>
               </button>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { scheduleReminder, type ReminderResponse } from '../../lib/api';
-import { XMarkIcon, CheckCircleIcon, ClockIcon } from '../common/Icons';
+import { Clock, X, CheckCircle2 } from 'lucide-react';
 
 interface ReminderModalProps {
   journeyId: string;
@@ -70,79 +70,83 @@ export function ReminderModal({ journeyId, isOpen, onClose }: ReminderModalProps
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-up"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="reminder-modal-title"
+      aria-labelledby="reminder-title"
     >
-      <div className="w-full max-w-md bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-3xl shadow-2xl p-6 flex flex-col gap-5 animate-scaleUp">
+      <div className="w-full max-w-md p-5 rounded-[6px] bg-[var(--card)] border border-[var(--rule-line)] flex flex-col gap-4 font-sans">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-3">
-          <div className="flex items-center gap-2">
-            <ClockIcon className="w-5 h-5 text-[var(--color-signal-cyan)]" />
-            <h2 id="reminder-modal-title" className="text-base font-bold text-[var(--text-primary)]">
-              Set Journey Reminder
-            </h2>
+        <div className="flex items-center justify-between border-b border-[var(--rule-line)] pb-2.5">
+          <div className="flex items-center gap-1.5 text-label">
+            <Clock size={14} className="text-[var(--roll-brass)]" />
+            <h3 id="reminder-title" className="font-semibold text-xs text-[var(--ink-navy)]">
+              Scheduled Audit Reminder
+            </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-default)] transition-colors"
-            aria-label="Close modal"
+            className="p-1 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:text-[var(--ink-navy)] hover:bg-[var(--muted)] transition-colors"
+            aria-label="Close"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <X size={14} />
           </button>
         </div>
 
         {result ? (
-          <div className="flex flex-col items-center text-center gap-3 py-4">
-            <div className="w-12 h-12 rounded-full bg-[var(--color-leaf)]/10 text-[var(--color-leaf)] flex items-center justify-center">
-              <CheckCircleIcon className="w-7 h-7" />
+          /* Confirmation View */
+          <div className="flex flex-col gap-3 py-2 font-mono">
+            <div className="flex items-start gap-2 text-[var(--present-green)]">
+              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold text-xs block text-[var(--ink-navy)]">Reminder Scheduled</span>
+                <p className="text-[11px] text-[var(--muted-foreground)] mt-0.5">
+                  {result.message}
+                </p>
+              </div>
             </div>
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">Reminder Scheduled!</h3>
-            <p className="text-xs text-[var(--text-secondary)] max-w-xs">
-              {result.message}
-            </p>
-            <div className="text-[11px] font-mono text-[var(--text-secondary)] bg-[var(--bg-surface-alt)] px-3 py-1.5 rounded-lg border border-[var(--border-default)]">
-              Outbox Delivery ID: {result.eventId.slice(0, 12)}...
+
+            <div className="p-2.5 rounded-[4px] bg-[var(--ledger-paper)] border border-[var(--rule-line)] text-[11px] flex flex-col gap-1 text-[var(--ink-navy)]">
+              <div><span className="text-[var(--muted-foreground)]">CHANNEL:</span> {channel.toUpperCase()}</div>
+              <div><span className="text-[var(--muted-foreground)]">SCHEDULED FOR:</span> {new Date(calculateRemindAt()).toLocaleString('en-IN')}</div>
+              <div><span className="text-[var(--muted-foreground)]">EVENT ID:</span> {result.eventId}</div>
             </div>
+
             <button
               type="button"
-              onClick={() => {
-                setResult(null);
-                onClose();
-              }}
-              className="mt-2 w-full py-2.5 rounded-xl bg-[var(--color-signal-cyan)] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+              onClick={onClose}
+              className="w-full py-1.5 rounded-[4px] border border-[var(--rule-line)] bg-[var(--muted)] text-[var(--ink-navy)] text-xs font-mono hover:bg-[var(--rule-line)]/50 transition-colors"
             >
               Done
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSchedule} className="flex flex-col gap-4">
-            {/* Channel Choice */}
+          /* Input Form */
+          <form onSubmit={handleSchedule} className="flex flex-col gap-3">
+            {/* Channel selection */}
             <div>
-              <label className="text-xs font-semibold text-[var(--text-primary)] mb-1.5 block">
-                Notification Channel
+              <label className="text-label mb-1 block">
+                Dispatch Channel
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-1.5 font-mono text-[11px]">
                 {[
-                  { id: 'whatsapp', label: 'WhatsApp', icon: '💬' },
-                  { id: 'sms', label: 'SMS', icon: '📱' },
-                  { id: 'push', label: 'Push', icon: '🔔' },
-                  { id: 'email', label: 'Email', icon: '✉️' },
+                  { id: 'whatsapp', label: 'WhatsApp' },
+                  { id: 'sms', label: 'SMS' },
+                  { id: 'push', label: 'Push' },
+                  { id: 'email', label: 'Email' },
                 ].map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setChannel(item.id as typeof channel)}
-                    className={`py-2 px-1 text-center rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 ${
+                    className={`py-1.5 px-1 text-center rounded-[4px] border transition-colors ${
                       channel === item.id
-                        ? 'border-[var(--color-signal-cyan)] bg-[var(--color-signal-cyan)]/10 text-[var(--color-signal-cyan)]'
-                        : 'border-[var(--border-default)] hover:border-[var(--border-strong)] text-[var(--text-secondary)]'
+                        ? 'border-[var(--present-green)] bg-[var(--present-green)]/10 text-[var(--present-green)] font-semibold'
+                        : 'border-[var(--rule-line)] text-[var(--muted-foreground)] hover:bg-[var(--muted)]'
                     }`}
                   >
-                    <span className="text-base">{item.icon}</span>
-                    <span>{item.label}</span>
+                    {item.label}
                   </button>
                 ))}
               </div>
@@ -150,10 +154,10 @@ export function ReminderModal({ journeyId, isOpen, onClose }: ReminderModalProps
 
             {/* Timing Presets */}
             <div>
-              <label className="text-xs font-semibold text-[var(--text-primary)] mb-1.5 block">
-                When to remind you?
+              <label className="text-label mb-1 block">
+                Reminder Time
               </label>
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-3 gap-1.5 font-mono text-[11px]">
                 {[
                   { id: 'tomorrow', label: 'Tomorrow 10 AM' },
                   { id: '3days', label: 'In 3 Days' },
@@ -163,10 +167,10 @@ export function ReminderModal({ journeyId, isOpen, onClose }: ReminderModalProps
                     key={t.id}
                     type="button"
                     onClick={() => setTiming(t.id as typeof timing)}
-                    className={`p-2 rounded-xl border text-center transition-all ${
+                    className={`p-1.5 rounded-[4px] border text-center transition-colors ${
                       timing === t.id
-                        ? 'border-[var(--color-signal-cyan)] bg-[var(--color-signal-cyan)]/10 font-semibold text-[var(--color-signal-cyan)]'
-                        : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
+                        ? 'border-[var(--present-green)] bg-[var(--present-green)]/10 font-semibold text-[var(--present-green)]'
+                        : 'border-[var(--rule-line)] text-[var(--muted-foreground)] hover:bg-[var(--muted)]'
                     }`}
                   >
                     {t.label}
@@ -177,39 +181,43 @@ export function ReminderModal({ journeyId, isOpen, onClose }: ReminderModalProps
 
             {/* Note text */}
             <div>
-              <label className="text-xs font-semibold text-[var(--text-primary)] mb-1.5 block">
-                Reminder Note
+              <label className="text-label mb-1 block">
+                Record Details
               </label>
-              <textarea
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                rows={2}
-                className="w-full text-xs p-3 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-signal-cyan)] resize-none"
-                placeholder="What should we remind you about?"
-              />
+              <div className="p-2 rounded-[4px] border border-[var(--rule-line)] bg-[var(--card)] focus-within:outline focus-within:outline-2 focus-within:outline-[var(--roll-brass)]">
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={2}
+                  className="w-full text-xs bg-transparent border-none outline-none resize-none text-[var(--ink-navy)] font-sans"
+                  style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
+                  placeholder="What should the ledger remind you about?"
+                />
+              </div>
             </div>
 
             {error && (
-              <div className="text-xs text-[var(--color-rust)] bg-[var(--color-rust)]/10 p-2.5 rounded-xl border border-[var(--color-rust)]/20">
+              <div className="alert-card p-2 text-xs font-mono">
                 {error}
               </div>
             )}
 
-            {/* Submit */}
-            <div className="flex gap-2 pt-2">
+            {/* Action Buttons: Icon to the LEFT, gap-1.5, size 14 */}
+            <div className="flex gap-2 pt-1 font-mono text-xs">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-2.5 rounded-xl border border-[var(--border-default)] text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--border-default)] transition-colors"
+                className="flex-1 py-1.5 rounded-[4px] border border-[var(--rule-line)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 py-2.5 rounded-xl bg-[var(--color-signal-cyan)] text-white text-xs font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="flex-1 py-1.5 rounded-[4px] bg-[var(--present-green)] hover:bg-[var(--present-green)]/90 text-white font-medium inline-flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
               >
-                {isSubmitting ? 'Scheduling...' : 'Set Reminder'}
+                <Clock size={14} />
+                <span>{isSubmitting ? 'Scheduling...' : 'Set Reminder'}</span>
               </button>
             </div>
           </form>

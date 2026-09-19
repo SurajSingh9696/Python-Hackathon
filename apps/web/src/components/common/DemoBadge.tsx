@@ -1,14 +1,15 @@
 import React from 'react';
+import { Circle } from 'lucide-react';
 
 export function DemoBadge({ className = '' }: { className?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-[var(--color-leaf)]/10 text-[var(--color-leaf)] border border-[var(--color-leaf)]/25 select-none ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono rounded-[6px] bg-[var(--card)] text-[var(--ink-navy)] border border-[var(--rule-line)] select-none ${className}`}
       role="status"
       aria-label="Security and verification status"
     >
-      <span className="w-2 h-2 rounded-full bg-[var(--color-leaf)] animate-pulse" aria-hidden="true" />
-      <span>Paytm Verified · 256-Bit SSL</span>
+      <Circle size={6} className="fill-current text-[var(--present-green)] animate-pulse" aria-hidden="true" />
+      <span>AUDITED · 256-BIT SSL</span>
     </span>
   );
 }
